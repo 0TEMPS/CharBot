@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local CBD = {}
 
 function CBD.CreateUi(Title, ClientInfo)
-	
+	print(ClientInfo)
 	local Window = Rayfield:CreateWindow({
 		Name = Title,
 		LoadingTitle = "CharBot Interface Suite",
