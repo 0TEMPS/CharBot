@@ -76,7 +76,7 @@ end
 function CBD.Output(Text)
 	local Label = Output:CreateLabel(Text)
 	wait(10)
-	Label:Set("bvye")
+	Label:Remove()
 end
 
 return CBD
