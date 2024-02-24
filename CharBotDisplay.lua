@@ -33,15 +33,22 @@ function CBD.CreateUi(Title, ClientInfo)
 	local Section = Info:CreateSection("Client Info")
 		print("made it")
 	-- Create an array to store the order of keys
-	local order = {"BotName", "BotUserID", "BotPath", "BotCharacter", "BotHumanoid", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
+	local order = {"BotName", "BotUserID", "BotHumanoid", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
+	
+	for i,v in ipairs(order) do
+		for i2,v2 in pairs(ClientInfo["BotInfo"]) do
+			if v == i2 then
+				local Label = Info:CreateLabel(tostring(i2).." = "..tostring(v2))
+			end
+		end
+	end
+	local Section = Info:CreateSection("Server Info")
+	local order2 = {"ChatType", "PlaceID", "PlaceName", "UniverseID"}
 
-	-- Iterate over the keys in the order array
-	for i, key in ipairs(order) do
-		-- Iterate over the sub-tables in ClientInfo
-		for subTableName, subTable in pairs(ClientInfo["BotInfo"]) do
-			-- Check if the current sub-table has the current key
-			if subTable[key] then
-				local Label = Info:CreateLabel(tostring(i).." = "..tostring(key)..",")
+	for i,v in ipairs(order2) do
+		for i2,v2 in pairs(ClientInfo["ServerInfo"]) do
+			if v == i2 then
+				local Label = Info:CreateLabel(tostring(i2).." = "..tostring(v2))
 			end
 		end
 	end
