@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://pastebin.com/raw/z07Qd5CY'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/main/RayfieldUI-CharBotCustom'))()
 
 local CBD = {}
 
@@ -75,6 +75,8 @@ end
 
 function CBD.Output(Text)
 	local Label = Output:CreateLabel(Text)
+	wait(10)
+	Label:Set("bvye")
 end
 
 return CBD
