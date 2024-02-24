@@ -33,6 +33,8 @@ function CBD.CreateUi(Title, ClientInfo)
 	local Section = Info:CreateSection("Client Info")
 		print("made it")
 	for i =1 , #ClientInfo["BotInfo"] do
+		print(tostring(ClientInfo["BotInfo"][i]))
+		print(tostring(ClientInfo["BotInfo"][i].Name))
 		local Label = Info:CreateLabel(tostring(ClientInfo["BotInfo"][i]).." = "..tostring(ClientInfo["BotInfo"][i].Name)..",") --->>  bla,  bla2, bla3
 	end
 	wait(0.3)
