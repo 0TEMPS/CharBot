@@ -1,9 +1,9 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet('https://pastebin.com/raw/z07Qd5CY'))()
 
 local CBD = {}
 
 function CBD.CreateUi(Title, ClientInfo)
-	local Window = Rayfield:CreateWindow({
+	Window = Rayfield:CreateWindow({
 		Name = Title,
 		LoadingTitle = "CharBot Interface Suite",
 		LoadingSubtitle = "by [💬] OQAL",
@@ -29,7 +29,7 @@ function CBD.CreateUi(Title, ClientInfo)
 		}
 	})
 	
-	local Info = Window:CreateTab("Info", 16498133093)
+	local Info = Window:CreateTab("Info", 16093328141)
 	local Section = Info:CreateSection("Client Info")
 		print("made it")
 	-- Create an array to store the order of keys
@@ -52,6 +52,23 @@ function CBD.CreateUi(Title, ClientInfo)
 			end
 		end
 	end
+	
+	
+	
+	
+end
+
+function CBD.PingTest(ResponseTable, bottomtext)
+	local Status = Window:CreateTab("Status", 16093311060)
+	local Section = Status:CreateSection("API Status")
+	
+	for i,v in pairs(ResponseTable) do
+		local Label = Status:CreateLabel(tostring(i).." = "..tostring(v))
+	end
+	
+	local Section = Status:CreateSection("User-Identifier")
+	local Paragraph = Status:CreateParagraph({Title = "", Content = bottomtext})
+	
 end
 
 return CBD
