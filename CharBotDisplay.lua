@@ -1,8 +1,8 @@
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/main/RayfieldUI-CharBotCustom'))()
+local Rayfield = loadstring(game:HttpGet('https://pastebin.com/raw/z07Qd5CY'))()
 
 local CBD = {}
 
-function CBD.CreateUi(Title, ClientInfo)
+function CBD.CreateUi(Title)
 	Window = Rayfield:CreateWindow({
 		Name = Title,
 		LoadingTitle = "CharBot Interface Suite",
@@ -28,13 +28,27 @@ function CBD.CreateUi(Title, ClientInfo)
 			Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
 		}
 	})
+end
+
+function CBD.PingTest(ResponseTable, bottomtext)
+	local Status = Window:CreateTab("Status", 16093311060)
+	local Section = Status:CreateSection("API Status")
 	
+	for i,v in pairs(ResponseTable) do
+		local Label = Status:CreateLabel(tostring(i).." = "..tostring(v))
+	end
+	
+	local Section = Status:CreateSection("User-Identifier")
+	local Paragraph = Status:CreateParagraph({Title = "", Content = bottomtext})
+	
+end
+
+function CBD.ClientInfo(ClientInfo)
 	local Info = Window:CreateTab("Info", 16093328141)
 	local Section = Info:CreateSection("Client Info")
-		print("made it")
 	-- Create an array to store the order of keys
 	local order = {"BotName", "BotUserID", "BotHumanoid", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
-	
+
 	for i,v in ipairs(order) do
 		for i2,v2 in pairs(ClientInfo["BotInfo"]) do
 			if v == i2 then
@@ -52,23 +66,15 @@ function CBD.CreateUi(Title, ClientInfo)
 			end
 		end
 	end
-	
-	
-	
+end
+function CBD.CreateCommandOutput()
+	Output = Window:CreateTab("Output", 16093328141)
+	local Section = Output:CreateSection("Output / Command Logs")
 	
 end
 
-function CBD.PingTest(ResponseTable, bottomtext)
-	local Status = Window:CreateTab("Status", 16093311060)
-	local Section = Status:CreateSection("API Status")
-	
-	for i,v in pairs(ResponseTable) do
-		local Label = Status:CreateLabel(tostring(i).." = "..tostring(v))
-	end
-	
-	local Section = Status:CreateSection("User-Identifier")
-	local Paragraph = Status:CreateParagraph({Title = "", Content = bottomtext})
-	
+function CBD.Output(Text)
+	local Label = Output:CreateLabel(Text)
 end
 
 return CBD
