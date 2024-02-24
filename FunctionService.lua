@@ -181,15 +181,21 @@ function FS.FindChatType()
 	return ChatServiceType
 end
 
-function FS.Report(Message, Public)
+function FS.Report(Message, Public, IgnorePrefix)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalChatMessages = StatsTable.TotalChatMessages + 1
 	print(Message)
+	local ReportMessage = "empty"
+	if IgnorePrefix == true then
+		ReportMessage = Message
+	else
+		ReportMessage = CurrentChatPrefix..Message
+	end
 	
 	if ChatServiceType == "LCS" then
 		if Public == true then
 			local args = {
-				[1] = CurrentChatPrefix..Message,
+				[1] = ReportMessage,
 				[2] = "All"
 			}
 
@@ -201,7 +207,7 @@ function FS.Report(Message, Public)
 		if Public == true then
 			local TextChannels = TCS:WaitForChild("TextChannels")
 
-			TextChannels.RBXGeneral:SendAsync(CurrentChatPrefix..Message)
+			TextChannels.RBXGeneral:SendAsync(ReportMessage)
 		end
 	end
 end
