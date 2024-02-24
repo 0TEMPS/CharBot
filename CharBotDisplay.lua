@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://pastebin.com/raw/z07Qd5CY'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/main/RayfieldUI-CharBotCustom'))()
 
 local CBD = {}
 
