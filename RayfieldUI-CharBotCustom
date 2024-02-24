@@ -1577,6 +1577,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 				Label.Title.Text = NewLabel
 			end
 
+			function LabelValue:Remove()
+				Label:Destroy()
+			end
+
 			return LabelValue
 		end
 
