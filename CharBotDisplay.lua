@@ -30,6 +30,15 @@ function CBD.CreateUi(Title)
 	})
 end
 
+function CBD.NewsTab(NewsTable)
+	local News = Window:CreateTab("News")
+	local Section = News:CreateSection("News and Updates regarding CharBot")
+	
+	for i,v in ipairs(NewsTable.News) do
+		local Paragraph = News:CreateParagraph({Title = i, Content = v})
+	end
+end
+
 function CBD.PingTest(ResponseTable, bottomtext)
 	local Status = Window:CreateTab("Status")
 	local Section = Status:CreateSection("API Status")
@@ -47,7 +56,7 @@ function CBD.ClientInfo(ClientInfo)
 	local Info = Window:CreateTab("Info")
 	local Section = Info:CreateSection("Client Info")
 	-- Create an array to store the order of keys
-	local order = {"BotName", "BotUserID", "BotHumanoid", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
+	local order = {"BotName", "BotUserID", "BotHumanoid","HWID", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
 
 	for i,v in ipairs(order) do
 		for i2,v2 in pairs(ClientInfo["BotInfo"]) do
@@ -66,6 +75,8 @@ function CBD.ClientInfo(ClientInfo)
 			end
 		end
 	end
+	
+	local Paragraph = Info:CreateParagraph({Title = "Hardware ID", Content = gethwid(), ", "})
 end
 function CBD.CreateCommandOutput()
 	Output = Window:CreateTab("Output")
@@ -75,7 +86,7 @@ end
 
 function CBD.Output(Text)
 	local Label = Output:CreateLabel(Text)
-	wait(10)
+	wait(20)
 	Label:Remove()
 end
 
