@@ -1,5 +1,22 @@
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/main/RayfieldUI-CharBotCustom'))()
 
+function PrintTable(tableobj)
+	if typeof(tableobj) == "table" then
+		print(tableobj)
+		for i,v in pairs(tableobj) do
+			wait(0.01)
+			if typeof(v) == "table" then
+				print("\n\n-- // -- "..tostring(i).." TABLE -- // -- \n")
+				PrintTable(v)
+			else
+				print(tostring(i).." = "..tostring(v))
+			end
+		end
+	else
+		warn("PrintTable Function : Object is not a table!")
+	end
+end
+
 local CBD = {}
 
 function CBD.CreateUi(Title)
@@ -36,8 +53,7 @@ function CBD.NewsTab(NewsTable)
 	
 	for i,v in ipairs(NewsTable.News) do
 		print(i)
-		print(v[1])
-		print(v[i])
+		PrintTable(v)
 		local Paragraph = News:CreateParagraph({Title = v[i], Content = v[1]})
 	end
 end
