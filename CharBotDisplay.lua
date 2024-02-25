@@ -34,7 +34,9 @@ function CBD.NewsTab(NewsTable)
 	local News = Window:CreateTab("News")
 	local Section = News:CreateSection("News and Updates regarding CharBot")
 	
-	for i,v in ipairs(NewsTable.News[1]) do
+	for i,v in ipairs(NewsTable.News) do
+		print(i)
+		print(v)
 		local Paragraph = News:CreateParagraph({Title = i, Content = v})
 	end
 end
