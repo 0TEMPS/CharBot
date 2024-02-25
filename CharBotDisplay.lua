@@ -36,8 +36,9 @@ function CBD.NewsTab(NewsTable)
 	
 	for i,v in ipairs(NewsTable.News) do
 		print(i)
-		print(v)
-		local Paragraph = News:CreateParagraph({Title = i, Content = v})
+		print(v[1])
+		print(v[i])
+		local Paragraph = News:CreateParagraph({Title = v[i], Content = v[1]})
 	end
 end
 
