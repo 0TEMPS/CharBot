@@ -465,6 +465,14 @@ function FS.ConvertKtoF(K)
 	return f
 end
 
+function FS.ConvertCtoF(C)
+	local f = 0
+	local no = 9/5
+	f = tonumber(C * no)
+	f = f+32
+
+	return f
+end
 
 
 
