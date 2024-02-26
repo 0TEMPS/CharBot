@@ -9,6 +9,9 @@ local TCS = game:GetService("TextChatService")
 local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
+local TextService = game:GetService("TextService")
+
+local CheckFiltering = false
 
 local ChatServiceType
 local function FindChatServiceType()
@@ -48,6 +51,10 @@ local abbreviations = {
 	["K"] = 4,
 	["M"] = 7
 }
+
+function WasFiltered(message)
+	return message:match('^#+$') ~= nil
+end
 
 local CurrentChatPrefix = ""
 
@@ -104,6 +111,10 @@ function FS.PrintTable(tableobj)
 	else
 		warn("PrintTable Function : Object is not a table!")
 	end
+end
+
+function FS.UpdateTextFilterSettings(bool)
+	CheckFiltering = bool
 end
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
@@ -184,14 +195,28 @@ end
 function FS.Report(Message, Public, IgnorePrefix)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalChatMessages = StatsTable.TotalChatMessages + 1
+	
 	print(Message)
-	local ReportMessage = "empty"
+	local ReportMessage = ""
+	
 	if IgnorePrefix == true then
 		ReportMessage = Message
 	else
 		ReportMessage = CurrentChatPrefix..Message
 	end
 	
+	
+	
+	if CheckFiltering == true then
+		ReportMessage = TextService:FilterStringAsync(ReportMessage, Players.LocalPlayer.UserId)
+		print("filtered text res")
+		print(ReportMessage)
+		
+		if WasFiltered(ReportMessage) == true then
+			ReportMessage = "[Filtered by Roblox]"
+		end
+	end
+
 	if ChatServiceType == "LCS" then
 		if Public == true then
 			local args = {
