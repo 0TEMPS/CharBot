@@ -50,26 +50,27 @@ end
 function CBD.NewsTab(NewsTable)
 	local News = Window:CreateTab("News")
 	local Section = News:CreateSection("News and Updates regarding CharBot")
-	
+
 	for i,v in ipairs(NewsTable.News) do
 		for i2,v2 in ipairs(i) do
 			print(tostring(v2))
 			PrintTable(v2)
-		local Paragraph = News:CreateParagraph({Title = tostring(i2), Content = tostring(v2)})
-	end
-end        
+			local Paragraph = News:CreateParagraph({Title = tostring(i2), Content = tostring(v2)})
+		end
+	end  
+end
 
 function CBD.PingTest(ResponseTable, bottomtext)
 	local Status = Window:CreateTab("Status")
 	local Section = Status:CreateSection("API Status")
-	
+
 	for i,v in pairs(ResponseTable) do
 		local Label = Status:CreateLabel(tostring(i).." = "..tostring(v))
 	end
-	
+
 	local Section = Status:CreateSection("User-Identifier")
 	local Paragraph = Status:CreateParagraph({Title = "", Content = bottomtext})
-	
+
 end
 
 function CBD.ClientInfo(ClientInfo)
@@ -95,13 +96,13 @@ function CBD.ClientInfo(ClientInfo)
 			end
 		end
 	end
-	
+
 	local Paragraph = Info:CreateParagraph({Title = "Hardware ID", Content = gethwid(), ", "})
 end
 function CBD.CreateCommandOutput()
 	Output = Window:CreateTab("Output")
 	local Section = Output:CreateSection("Output / Command Logs")
-	
+
 end
 
 function CBD.Output(Text)
@@ -116,26 +117,26 @@ end
 
 function CBD.BotConfigSettings(BotConfigTable)
 	local Section = BotConfig:CreateSection("General Settings")
-	
+
 	local Label = BotConfig:CreateLabel("Owner = "..BotConfigTable["General Settings"]["Owner"])
-	
+
 	local Paragraph = BotConfig:CreateParagraph({Title = "Approval Words", Content = table.concat(BotConfigTable["General Settings"]["Approval Words"], ", ")})
-	
+
 	local Paragraph = BotConfig:CreateParagraph({Title = "Disapproval Words", Content = table.concat(BotConfigTable["General Settings"]["DisapprovalWords"], ", ")})
-	
+
 	local Paragraph = BotConfig:CreateParagraph({Title = "Greetings", Content = table.concat(BotConfigTable["General Settings"]["Greetings"], ", ")})
-	
+
 	local Label = BotConfig:CreateLabel("AutoJumpWhenSitting = "..tostring(BotConfigTable["General Settings"]["AutoJumpWhenSitting"]))
 	local Label = BotConfig:CreateLabel("Error-Logging = "..tostring(BotConfigTable["General Settings"]["Error-Logging"]))
 	local Label = BotConfig:CreateLabel("Log-Commands = "..tostring(BotConfigTable["General Settings"]["Log-Commands"]))
-	
+
 	local Label = BotConfig:CreateLabel("NativeCurrency = "..tostring(BotConfigTable["General Settings"]["NativeCurrency"]))
 	local Label = BotConfig:CreateLabel("CurrencySymbol = "..tostring(BotConfigTable["General Settings"]["CurrencySymbol"]))
-	
+
 	local Label = BotConfig:CreateLabel("PlayerLockBrickVector = "..tostring(BotConfigTable["General Settings"]["PlayerLockBrickVector"]))
-	
+
 	local Section = BotConfig:CreateSection("Chat Settings")
-	
+
 	local Label = BotConfig:CreateLabel("ChatPublicly = "..tostring(BotConfigTable["Chat Settings"].ChatPublicly))
 	local Label = BotConfig:CreateLabel("ChatLoadingOutputs = "..tostring(BotConfigTable["Chat Settings"].ChatLoadingOutputs))
 	local Label = BotConfig:CreateLabel("ChatStartupGreeting = "..tostring(BotConfigTable["Chat Settings"].ChatStartupGreeting))
@@ -143,11 +144,11 @@ function CBD.BotConfigSettings(BotConfigTable)
 	local Label = BotConfig:CreateLabel("ChatPrefix = "..tostring(BotConfigTable["Chat Settings"].ChatPrefix))
 
 	local Section = BotConfig:CreateSection("API Keys")
-	
+
 	local Label = BotConfig:CreateLabel("APININJA_KEY = "..tostring(BotConfigTable["API Keys"].APININJA_KEY))
 	local Label = BotConfig:CreateLabel("RBLX_TRADE_CSRF = "..tostring(BotConfigTable["API Keys"].RBLX_TRADE_CSRF))
-	
-	
+
+
 end
 
 function CBD.CommandListTab()
