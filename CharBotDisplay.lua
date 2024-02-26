@@ -2,7 +2,7 @@ local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEM
 
 function PrintTable(tableobj)
 	if typeof(tableobj) == "table" then
-		print("PRNT TABLE : "..tableobj)
+		print("PRNT TABLE : "..tostring(tableobj))
 		for i,v in pairs(tableobj) do
 			wait(0.01)
 			if typeof(v) == "table" then
@@ -56,7 +56,7 @@ function CBD.NewsTab(NewsTable)
 		PrintTable(v)
 		local Paragraph = News:CreateParagraph({Title = tostring(i), Content = tostring(v)})
 	end
-end
+end        
 
 function CBD.PingTest(ResponseTable, bottomtext)
 	local Status = Window:CreateTab("Status")
