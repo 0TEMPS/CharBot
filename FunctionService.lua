@@ -9,9 +9,9 @@ local TCS = game:GetService("TextChatService")
 local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
-local TextService = game:GetService("TextService")
 
-local CheckFiltering = false
+
+
 
 local ChatServiceType
 local function FindChatServiceType()
@@ -206,16 +206,7 @@ function FS.Report(Message, Public, IgnorePrefix)
 	end
 	
 	
-	
-	if CheckFiltering == true then
-		ReportMessage = TextService:FilterStringAsync(ReportMessage, Players.LocalPlayer.UserId)
-		print("filtered text res")
-		print(ReportMessage)
-		
-		if WasFiltered(ReportMessage) == true then
-			ReportMessage = "[Filtered by Roblox]"
-		end
-	end
+
 
 	if ChatServiceType == "LCS" then
 		if Public == true then
