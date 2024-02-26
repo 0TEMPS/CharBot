@@ -2,7 +2,7 @@ local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEM
 
 function PrintTable(tableobj)
 	if typeof(tableobj) == "table" then
-		print(tableobj)
+		print("PRNT TABLE : "..tableobj)
 		for i,v in pairs(tableobj) do
 			wait(0.01)
 			if typeof(v) == "table" then
@@ -52,9 +52,9 @@ function CBD.NewsTab(NewsTable)
 	local Section = News:CreateSection("News and Updates regarding CharBot")
 	
 	for i,v in ipairs(NewsTable.News) do
-		print(i)
-		PrintTable(PrintTable(v))
-		local Paragraph = News:CreateParagraph({Title = v[i], Content = v[1]})
+		print(v)
+		PrintTable(v)
+		local Paragraph = News:CreateParagraph({Title = tostring(i), Content = tostring(v)})
 	end
 end
 
