@@ -52,7 +52,7 @@ function CBD.NewsTab(NewsTable)
 	local Section = News:CreateSection("News and Updates regarding CharBot")
 
 	for i,v in ipairs(NewsTable.News) do
-		for i2,v2 in ipairs(i) do
+		for i2,v2 in ipairs(v) do
 			print(tostring(v2))
 			PrintTable(v2)
 			local Paragraph = News:CreateParagraph({Title = tostring(i2), Content = tostring(v2)})
