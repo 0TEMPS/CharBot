@@ -113,6 +113,9 @@ function FS.PrintTable(tableobj)
 	end
 end
 
+function FS.ReplaceUrlSpacing(text)
+	return string:gsub(text, "%s", "%%20")
+end
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
@@ -169,7 +172,7 @@ end
 function FS.Request(URL, METHOD, HEADERS)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
-)
+
 	local Getrequest
 	Getrequest = request({
 		Url = URL,
