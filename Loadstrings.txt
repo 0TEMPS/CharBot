@@ -1,1 +1,1 @@
-lolad
+loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/CharBotBasic.lua"))()
