@@ -86,6 +86,7 @@ local ApprovalWords = BotConfig["General Settings"]["Approval Words"]
 local DisapprovalWords = BotConfig["General Settings"].DisapprovalWords
 
 local CurrentOwner = BotConfig["General Settings"].Owner
+local APINinjaKey = BotConfig["API Keys"].APININJA_KEY
 local AutoJumpWhenSitting = BotConfig["General Settings"].AutoJumpWhenSitting
 
 
