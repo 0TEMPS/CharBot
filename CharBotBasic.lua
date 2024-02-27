@@ -1545,7 +1545,6 @@ end)
 
 CBD.CreateBotConfigTab()
 wait(0.1)
-CBD.BotConfigSettings(BotConfig)
 
 CBD.CommandListTab()
 CBD.AddCommands(CommandsTable)
