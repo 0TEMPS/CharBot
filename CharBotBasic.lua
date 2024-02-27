@@ -1299,6 +1299,16 @@ local CommandsTable = {
 			end
 		end
 	end,
+	
+	[".globalcryptodata"] = function()
+		local MarketData = FS.Get_Request("https://api.coingecko.com/api/v3/global")
+		
+		local Data = MarketData.data
+		
+		local MarketCap = MarketData.total_market_cap[Currency]
+		
+		FS.Report("There are currently "..FS.comma_value(Data.active_cryptocurrencies).." active cryptocurrencies, the combined market cap of these is "..FS.abbreviate(MarketCap))
+	end,
 
 
 	-- Rolimons Commands
