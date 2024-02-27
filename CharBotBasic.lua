@@ -59,7 +59,7 @@ local ClientInfo = {
 	},
 }
 
-if BotConfig["API Keys"].APININJA_KEY == "" or BotConfig["API Keys"].APININJA_KEY == "KEY-HERE" then
+if _G.BotConfig["API Keys"].APININJA_KEY == "" or _G.BotConfig["API Keys"].APININJA_KEY == "KEY-HERE" then
 else
 	ClientInfo.BotInfo.ValidAPINinjaKey = true
 end
