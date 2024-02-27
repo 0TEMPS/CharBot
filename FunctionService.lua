@@ -114,7 +114,13 @@ function FS.PrintTable(tableobj)
 end
 
 function FS.ReplaceUrlSpacing(text)
-	return string:gsub(text, "%s", "%%20")
+	if typeof(text) == "string" then
+		return string:gsub(text, "%s", "%%20")
+	else
+		warn("TextWasNotString")
+		return text
+	end
+	
 end
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
