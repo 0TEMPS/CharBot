@@ -77,7 +77,7 @@ function CBD.ClientInfo(ClientInfo)
 	local Info = Window:CreateTab("Info")
 	local Section = Info:CreateSection("Client Info")
 	-- Create an array to store the order of keys
-	local order = {"BotName", "BotUserID", "BotHumanoid", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
+	local order = {"BotName", "BotUserID", "BotHumanoid","HWID", "ClientVersion", "CurrentEnvironment", "Executor", "ClientTimezone", "ClientStartTime", "RigType"}
 
 	for i,v in ipairs(order) do
 		for i2,v2 in pairs(ClientInfo["BotInfo"]) do
