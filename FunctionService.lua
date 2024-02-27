@@ -113,8 +113,8 @@ function FS.PrintTable(tableobj)
 	end
 end
 
-function FS.UpdateTextFilterSettings(bool)
-	CheckFiltering = bool
+function FS.ReplaceUrlSpacing(text)
+	return string:gsub(text, "%s", "%%20")
 end
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
@@ -159,6 +159,7 @@ end
 function FS.Get_Request(URL)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
+	URL = FS.ReplaceUrlSpacing(URL)
 	local Getrequest
 	Getrequest = request({
 		Url = URL,
@@ -171,7 +172,7 @@ end
 function FS.Request(URL, METHOD, HEADERS)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
-
+	URL = FS.ReplaceUrlSpacing(URL)
 	local Getrequest
 	Getrequest = request({
 		Url = URL,
@@ -225,6 +226,21 @@ function FS.Report(Message, Public, IgnorePrefix)
 
 			TextChannels.RBXGeneral:SendAsync(ReportMessage)
 		end
+	end
+end
+
+function FS.WebhookRequest(url, WebhookTable)
+	local response if request then
+		response = request(
+			{
+				Url = url,
+				Method = "POST",
+				Headers = {
+					["Content-Type"] = "application/json"
+				},
+				Body = HTTP:JSONEncode(WebhookTable)
+			}
+		)
 	end
 end
 
