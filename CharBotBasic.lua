@@ -67,6 +67,8 @@ end
 local Log = {}
 Log[ClientInfo["BotInfo"].BotPath] = tick()
 
+
+
 local Player = ClientInfo["BotInfo"].BotPath
 local Character = ClientInfo["BotInfo"].BotCharacter
 local Humanoid = ClientInfo["BotInfo"].BotHumanoid
@@ -75,19 +77,20 @@ local CLP = BotConfig["Chat Settings"].ChatPublicly
 local CLO = BotConfig["Chat Settings"].ChatLoadingOutputs
 local CEL = BotConfig["Chat Settings"].ChatErrorLogs
 
-local HLTable = BotConfig["General Settings"]["OwnerHighlight"]
-local TargetHLTable = BotConfig["General Settings"]["OwnerHighlight"]
+local Owner = _G.BotConfig["General Settings"]["OwnerHighlight"]
 
-local Greetings = BotConfig["General Settings"].Greetings
-local Currency = string.lower(BotConfig["General Settings"].NativeCurrency)
-local CurrencySymbol = BotConfig["General Settings"].CurrencySymbol
+local HLTable = _G.BotConfig["General Settings"]["OwnerHighlight"]
+local TargetHLTable = _G.BotConfig["General Settings"]["OwnerHighlight"]
 
-local ApprovalWords = BotConfig["General Settings"]["Approval Words"]
-local DisapprovalWords = BotConfig["General Settings"].DisapprovalWords
+local Greetings = _G.BotConfig["General Settings"].Greetings
+local Currency = string.lower(_G.BotConfig["General Settings"].NativeCurrency)
+local CurrencySymbol = _G.BotConfig["General Settings"].CurrencySymbol
 
-local CurrentOwner = BotConfig["General Settings"].Owner
-local APINinjaKey = BotConfig["API Keys"].APININJA_KEY
-local AutoJumpWhenSitting = BotConfig["General Settings"].AutoJumpWhenSitting
+local ApprovalWords = _G.BotConfig["General Settings"]["Approval Words"]
+local DisapprovalWords = _G.BotConfig["General Settings"].DisapprovalWords
+
+local CurrentOwner = _G.BotConfig["General Settings"].Owner
+local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 
 local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
@@ -108,7 +111,7 @@ local CBD = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/Ch
 CBD.CreateUi("[💬] OQAL: "..VersionName.." V"..VersionNumber, ClientInfo)
 CBD.CreateCommandOutput()
 
-if BotConfig["General Settings"]["Error-Logging"] == true then
+if _G.BotConfig["General Settings"]["Error-Logging"] == true then
 	local function onMessageOut(message, messageType)
 		if tostring(messageType) == "Enum.MessageType.MessageError" then
 			FS.Report("[🔴] "..message,CEL)
@@ -117,11 +120,11 @@ if BotConfig["General Settings"]["Error-Logging"] == true then
 
 	FS.Report("Error logging enabled, errors will be reported.",CLO)
 	LogService.MessageOut:Connect(onMessageOut)
-elseif BotConfig["General Settings"]["Error-Logging"] == false then
+elseif _G.BotConfig["General Settings"]["Error-Logging"] == false then
 	FS.Report("Error logging disabled, skipping checks.",CLO)
 end
 
-if BotConfig["General Settings"]["Log-Commands"] == true then
+if _G.BotConfig["General Settings"]["Log-Commands"] == true then
 	local function onMessageOut(message, messageType)
 		local output = coroutine.wrap(function()
 			CBD.Output(message)
@@ -138,7 +141,7 @@ local Variables = {
 	KeepOrbit = "UNKNOWN",
 	debounce = false,
 	CurrentlyWalkingToOwner = nil,
-	NewOwner = game.Workspace:FindFirstChild(BotConfig["General Settings"].Owner),
+	NewOwner = game.Workspace:FindFirstChild(_G.BotConfig["General Settings"].Owner),
 	ChatSpyActive = false
 }
 
@@ -267,7 +270,7 @@ function SetOwner(NewOwner)
 	CurrentlyWalkingToOwner = true
 	FS.Report("Transfering CMD Ownership to "..tostring(NewOwner)..", please wait.",false)
 
-	FS.CreatePlrLockBrick(tostring(NewOwner), BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
+	FS.CreatePlrLockBrick(tostring(NewOwner), _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
 	if ownerchar then
 		if ownerchar:FindFirstChild("TargetPart") then
@@ -289,7 +292,7 @@ end
 function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
 	FS.Report("Target "..tostring(TargetPart).." found, attempting to walk there...",CLP)
 
-	FS.CreatePlrLockBrick(TargetPart, BotConfig["General Settings"].PlayerLockBrickVector, false, "TestPFPart")
+	FS.CreatePlrLockBrick(TargetPart, _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TestPFPart")
 	local targetchar = game.Workspace:FindFirstChild(tostring(TargetPart))
 	if targetchar then
 		if targetchar:FindFirstChild("TestPFPart") then
@@ -301,7 +304,7 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
 			if returntoowner == true then
 				FS.Report(MessageToSay,CLP)
 				wait(2)
-				SetOwner(BotConfig["General Settings"].Owner)
+				SetOwner(_G.BotConfig["General Settings"].Owner)
 				wait(1)
 				parttowalktoo:Destroy()
 			end
@@ -396,7 +399,7 @@ function PingTest()
 	end
 	wait(0.3)
 	local headers = {
-		["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+		["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 	}
 	
 	if ClientInfo.BotInfo.ValidAPINinjaKey == false then
@@ -465,7 +468,7 @@ FS.Report(FS.TestConnection(),CLO)
 local OwnerPlayerInstance = Players:FindFirstChild(CurrentOwner)
 local OwnerCharacter = OwnerPlayerInstance.Character
 
-FS.CreateHightLight(tostring(BotConfig["General Settings"]["Owner"]), BotConfig["General Settings"].OwnerHighlight)
+FS.CreateHightLight(tostring(_G.BotConfig["General Settings"]["Owner"]), _G.BotConfig["General Settings"].OwnerHighlight)
 
 
 local CommandsTable = {
@@ -556,7 +559,7 @@ local CommandsTable = {
 		FS.Report("CWTO has been set to "..tostring(CurrentlyWalkingToOwner),CLP)
 
 		if CurrentlyWalkingToOwner == true then
-			SetOwner(BotConfig["General Settings"].Owner)
+			SetOwner(_G.BotConfig["General Settings"].Owner)
 		end
 	end,
 
@@ -576,7 +579,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to "..BotConfig["General Settings"].Owner)
+				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner)
 			end	
 		end
 	end,
@@ -945,7 +948,7 @@ local CommandsTable = {
 		if string.sub(Arg, 1, 7) == ".planet" then
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local PlanetName = string.sub(Arg, 9)
@@ -961,7 +964,7 @@ local CommandsTable = {
 	[".randomword"] = function()
 
 		local headers = {
-			["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+			["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 		}
 
 		local RandomWord = FS.Request("https://api.api-ninjas.com/v1/randomword","GET",headers)
@@ -974,7 +977,7 @@ local CommandsTable = {
 		if string.sub(Arg, 1, 10) == ".commodity" then
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local CommodityName = string.sub(Arg, 12)
@@ -1019,7 +1022,7 @@ local CommandsTable = {
 
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local StockName = string.sub(Arg, 8)
@@ -1041,7 +1044,7 @@ local CommandsTable = {
 
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local CityName = string.sub(Arg, 7)
@@ -1066,7 +1069,7 @@ local CommandsTable = {
 
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local CityName = string.sub(Arg, 10)
@@ -1100,7 +1103,7 @@ local CommandsTable = {
 
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local RhymeWord = string.sub(Arg, 8)
@@ -1127,7 +1130,7 @@ local CommandsTable = {
 
 
 			local headers = {
-				["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
+				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 			}
 
 			local RhymeWord = string.sub(Arg, 9)
@@ -1243,7 +1246,7 @@ local CommandsTable = {
 						CoinPrice = tostring(math.floor(CoinPrice * 100) / 100)
 					end
 				end
-				FS.Report("The #"..Question2.." trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
+				FS.Report("The #"..Question2.." trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about ".._G.BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
 
 
 			end
@@ -1545,6 +1548,7 @@ end)
 
 CBD.CreateBotConfigTab()
 wait(0.1)
+CBD.BotConfigSettings(_G.BotConfig)
 
 CBD.CommandListTab()
 CBD.AddCommands(CommandsTable)
