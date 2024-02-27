@@ -113,9 +113,6 @@ function FS.PrintTable(tableobj)
 	end
 end
 
-function FS.ReplaceUrlSpacing(text)
-	return string:gsub(text, "%s", "%%20")
-end
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
