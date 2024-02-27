@@ -400,6 +400,10 @@ function FS.round(n)
 	return math.floor(tonumber(n) + 0.5)
 end
 
+function FS.rounddecimal(n)
+	return math.floor(tonumber(n) + 0.05)
+end
+
 function FS.percentround(n)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	local Ratio = n / 1
