@@ -4,7 +4,7 @@ CHAR-BOT ]=]
 
 -- Version
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.0"
+local VersionNumber = "5.3.2 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -102,7 +102,7 @@ local ClientInfo = {
 		BotPath = Players.LocalPlayer,
 		BotCharacter = Players.LocalPlayer.Character,
 		BotHumanoid = Players.LocalPlayer.Character.Humanoid,
-		
+
 		HWID = gethwid(),
 
 		ClientVersion = version(),
@@ -113,8 +113,8 @@ local ClientInfo = {
 		ClientStartTime = os.time(),
 
 		RigType = Players.LocalPlayer.Character.Humanoid.RigType,
-		
-		
+
+
 
 
 	},
@@ -155,8 +155,8 @@ FS.SetChatPrefix(BotConfig["Chat Settings"].ChatPrefix)
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.Report("FunctionService API Loaded.",CLO)
-
-local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..ClientInfo["ServerInfo"].PlaceID.."/universe")
+print("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
+local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
 
 local unixdate = FS.unixtodate(ClientInfo.BotInfo.ClientStartTime)
@@ -182,12 +182,10 @@ end
 
 if BotConfig["General Settings"]["Log-Commands"] == true then
 	local function onMessageOut(message, messageType)
-		if tostring(messageType) == "Enum.MessageType.MessageOutput" then
-			local output = coroutine.wrap(function()
-				CBD.Output(message)
-			end)
-			output()
-		end
+		local output = coroutine.wrap(function()
+			CBD.Output(message)
+		end)
+		output()
 	end
 
 	LogService.MessageOut:Connect(onMessageOut)
@@ -204,7 +202,7 @@ local Variables = {
 }
 
 local RolimonsItemTable = FS.RolimonsValueTable()
-FS.Report("Rolimons value table loaded, "..RolimonsItemTable.item_count.." items updated.", CLO)
+FS.Report("Rolimons value table loaded, "..tostring(RolimonsItemTable.item_count).." items updated.", CLO)
 
 
 ClientInfo["ServerInfo"].ChatType = FS.FindChatType()
@@ -370,6 +368,7 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
 	end
 end
 
+
 function AutoJumpIfSat()
 	coroutine.wrap(function()
 		while true do
@@ -383,23 +382,51 @@ function AutoJumpIfSat()
 	end)()
 end
 
-function onChatted(Player,msg)
-
+function onChatted(p,msg)
 	if Variables.ChatSpyActive == true then
+
+		Config = {
+			enabled = true,
+			spyOnMyself = false,
+			public = true,
+			publicItalics = true
+		}
+
+		PrivateProperties = {
+			Color = Color3.fromRGB(0,255,255); 
+			Font = Enum.Font.SourceSansBold;
+			TextSize = 18;
+		}
+
 		local saymsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
 		local getmsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("OnMessageDoneFiltering")
+		local instance = (_G.chatSpyInstance or 0) + 1
+		_G.chatSpyInstance = instance
 
+		local StarterGui = game:GetService("StarterGui")
 
-		msg = msg:gsub("[\n\r]",''):gsub("\t",' '):gsub("[ ]+",' ')
-		local hidden = true
-		local conn = getmsg.OnClientEvent:Connect(function(packet,channel)
-			if packet.SpeakerUserId==Player.UserId and packet.Message==msg:sub(#msg-#packet.Message+1) and (channel=="All" or (channel=="Team" and Players[packet.FromSpeaker].Team==Players.LocalPlayer.Team)) then
-				hidden = false
+		if _G.chatSpyInstance == instance then
+			if p==Player and msg:lower():sub(1,4)=="/spy" then
+				Config.enabled = not Config.enabled
+				wait(0.3)
+				PrivateProperties.Text = "{SPY "..(Config.enabled and "EN" or "DIS").."ABLED}"
+				StarterGui:SetCore("ChatMakeSystemMessage", PrivateProperties)
+			elseif Config.enabled and (Config.spyOnMyself==true or p~=Player) then
+				msg = msg:gsub("[\n\r]",''):gsub("\t",' '):gsub("[ ]+",' ')
+				local hidden = true
+				local conn = getmsg.OnClientEvent:Connect(function(packet,channel)
+					if packet.SpeakerUserId==p.UserId and packet.Message==msg:sub(#msg-#packet.Message+1) and (channel=="All" or (channel=="Team" and Config.public==false and Players[packet.FromSpeaker].Team==Player.Team)) then
+						hidden = false
+					end
+				end)
+				wait(1)
+				conn:Disconnect()
+				if hidden and Config.enabled then
+					if Config.public then
+						FS.Report("{SPY} [".. p.Name .."]: "..msg,CLP)
+					end
+				end
 			end
-		end)
-		
-		if hidden == true then
-			FS.Report("{SPY} ["..Player.Name.."]"..msg,CLP, true)
 		end
 
 	end
@@ -512,7 +539,7 @@ local CommandsTable = {
 		FS.PrintTable(ClientInfo)
 	end,
 
-	[".chatlogs"] = function()
+	[".chatpublic"] = function()
 		if CLP == true then
 			CLP = false
 
@@ -1058,7 +1085,7 @@ local CommandsTable = {
 			end 
 		end
 	end,
-	
+
 	[".city"] = function(Arg)
 		if string.sub(Arg, 1, 5) == ".city" then
 
@@ -1068,9 +1095,12 @@ local CommandsTable = {
 			}
 
 			local CityName = string.sub(Arg, 7)
-
+			
+			
+			
+			print("https://api.api-ninjas.com/v1/city?name="..CityName)
 			local CityInfo = FS.Request("https://api.api-ninjas.com/v1/city?name="..CityName,"GET",headers)
-
+		
 			if CityInfo["error"] ~= nil then
 				FS.Report(CityInfo["error"],CLP)
 
@@ -1080,7 +1110,7 @@ local CommandsTable = {
 			end 
 		end
 	end,
-	
+
 	[".weather"] = function(Arg)
 		if string.sub(Arg, 1, 8) == ".weather" then
 
@@ -1097,12 +1127,12 @@ local CommandsTable = {
 				FS.Report(WeatherInfo["error"],CLP)
 
 			else
-				
+
 				local maxtemp = FS.ConvertCtoF(WeatherInfo.max_temp)
 				local mintemp = FS.ConvertCtoF(WeatherInfo.min_temp)
-				
+
 				local currenttemp = FS.ConvertCtoF(WeatherInfo.temp)
-				
+
 				if currenttemp >= 65 then
 					modifierword = "warm"
 				else
@@ -1114,7 +1144,7 @@ local CommandsTable = {
 			end 
 		end
 	end,
-	
+
 	[".rhyme"] = function(Arg)
 		if string.sub(Arg, 1, 6) == ".rhyme" then
 
@@ -1132,7 +1162,7 @@ local CommandsTable = {
 
 			else
 				FS.Report("I've found "..#RhymeInfo.." words that rhyme with "..RhymeWord,CLP)
-				
+
 				if #RhymeInfo > 0 then
 					wait(0.3)
 					FS.Report("Some words that rhyme with "..RhymeWord.." are "..RhymeInfo[math.random(1,#RhymeInfo)]..", "..RhymeInfo[math.random(1,#RhymeInfo)]..", "..RhymeInfo[math.random(1,#RhymeInfo)].." and "..RhymeInfo[math.random(1,#RhymeInfo)],CLP)
@@ -1141,7 +1171,7 @@ local CommandsTable = {
 			end 
 		end
 	end,
-	
+
 	[".define"] = function(Arg)
 		if string.sub(Arg, 1, 7) == ".define" then
 
@@ -1157,7 +1187,7 @@ local CommandsTable = {
 				FS.Report(DefineInfo["error"],CLP)
 
 			else
-				
+
 				local Def = DefineInfo.definition
 				local NewDef = Def:sub(1,110)
 				FS.Report(RhymeWord.." is defined as...",CLP)
@@ -1202,7 +1232,7 @@ local CommandsTable = {
 			FS.Report("This game uses TCS, Char-Bot is unable to read private messages.",CLP)
 		end
 	end,
-	
+
 	[".chatspy"] = function(Arg)
 		if string.sub(Arg, 1, 8) == ".chatspy" then
 			local PlayerName = string.sub(Arg, 10)
@@ -1211,22 +1241,63 @@ local CommandsTable = {
 				print(AutoFilledName)
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				FS.Report("Attempting to ChatSpy "..AutoFilledName,CLP)
-				Players[AutoFilledName].Chatted:connect(function(msg)
-					onChatted(Players[AutoFilledName], msg)
-				end)
+
+				if ClientInfo.ServerInfo.ChatType == "TCS" then
+					FS.Report("This game uses TCS, Char-Bot is unable to read private messages.",CLP)
+				else
+					FS.Report("Attempting to ChatSpy "..AutoFilledName,CLP)
+					Players[AutoFilledName].Chatted:connect(function(msg)
+						print("dewtected this")
+						onChatted(Players[AutoFilledName], msg)
+					end)
+				end
 			end
 		end
 	end,
-	
+
 	[".credits"] = function()
-	FS.Report("CharBot was created by 00temps and SAUCEITD0WN.",CLP)
-	wait(0.3)
-	FS.Report("You can learn how to get your own personal CharBot by joining our 💿 server.",CLP)
+		FS.Report("CharBot was created by 00temps, hopefully should be released to the public sometime in march 2024.",CLP)
+		wait(0.3)
 	end,
 	
-	[".testhwid"] = function()
-		print(gethwid())
+	[".trendingcrypto"] = function()
+		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
+		local CoinsList = CoinInfo.coins
+		
+		local Coin1 = CoinsList[1].item
+		local Coin1Data = Coin1.data
+		
+		local CoinPrice = tostring(Coin1Data.price):gsub("%$", "")
+		print(CoinPrice)
+		if tonumber(CoinPrice) < 1 then
+			if tonumber(CoinPrice) > 0 then
+				CoinPrice = tostring(math.floor(CoinPrice * 100) / 100)
+			end
+		end
+		FS.Report("The #1 trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
+		
+		wait(0.3)
+		
+		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",OwnerPlayerInstance)
+		if table.find(ApprovalWords,string.lower(Question1)) then
+			local Question2 = FS.Prompt("Which Number? (1-14)",OwnerPlayerInstance)
+				if table.find(DisapprovalWords,string.lower(Question2)) then
+				else
+				local Coin1 = CoinsList[tonumber(Question2)].item
+				local Coin1Data = Coin1.data
+				
+				local CoinPrice = tostring(Coin1Data.price):gsub("%$", "")
+				print(CoinPrice)
+				if tonumber(CoinPrice) < 1 then
+					if tonumber(CoinPrice) > 0 then
+						CoinPrice = tostring(math.floor(CoinPrice * 100) / 100)
+					end
+				end
+				FS.Report("The #"..Question2.." trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
+
+					
+			end
+		end
 	end,
 
 
