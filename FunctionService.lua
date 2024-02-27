@@ -116,13 +116,13 @@ end
 function FS.ReplaceUrlSpacing(text)
 	if typeof(text) == "string" then
 		print(text.." was string")
-		return string:gsub(text, "%s", "%%20")
+		return text:gsub("%s", "%%20")
 	else
 		warn("TextWasNotString")
 		return text
 	end
-	
 end
+
 
 function FS.PathfindPart(PartInstance,Char,Humanoid)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
