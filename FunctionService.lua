@@ -397,7 +397,7 @@ function FS.abbreviate(number)
 end
 
 function FS.round(n)
-	return math.floor(n + 0.5)
+	return math.floor(tonumber(n) + 0.5)
 end
 
 function FS.percentround(n)
