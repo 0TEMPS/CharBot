@@ -146,6 +146,27 @@ function FS.Environment(Info)
 	return args
 end
 
+function FS.CreateHightLight(playername,highlighttable)
+	local HL = Instance.new("Highlight")
+	HL.FillColor = highlighttable.FillColor1
+	HL.OutlineColor = highlighttable.OutlineColor1
+	HL.FillTransparency = highlighttable.FillTrans1
+	HL.OutlineTransparency = highlighttable.OutlineTrans
+
+	HL.Parent = Players[playername].Character
+end
+
+function FS.RemoveHightLight(playername)
+	local char = Players[playername].Character
+	wait(1)
+	for i,v in pairs(char:GetChildren()) do
+		if v:IsA("Highlight") then
+			v:Destroy()
+		end
+	end
+end
+
+
 function FS.TestConnection()
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
