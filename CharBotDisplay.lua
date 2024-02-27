@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/a5a1f4839d732fc6ddb740c017b0cfc2abef5b61/RayfieldUI-CharBotCustom.lua'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/0TEMPS/CharBot/main/RayfieldUI-CharBotCustom.lua'))()
 
 function PrintTable(tableobj)
 	if typeof(tableobj) == "table" then
