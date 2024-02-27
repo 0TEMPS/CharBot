@@ -115,6 +115,7 @@ end
 
 function FS.ReplaceUrlSpacing(text)
 	if typeof(text) == "string" then
+		print(text.." was string")
 		return string:gsub(text, "%s", "%%20")
 	else
 		warn("TextWasNotString")
@@ -165,10 +166,10 @@ end
 function FS.Get_Request(URL)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
-
+	URL2 = FS.ReplaceUrlSpacing(URL)
 	local Getrequest
 	Getrequest = request({
-		Url = URL,
+		Url = URL2,
 		Method = "GET",
 	})
 	local Decode = HTTP:JSONDecode(Getrequest.Body)
@@ -178,10 +179,10 @@ end
 function FS.Request(URL, METHOD, HEADERS)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
-
+	URL2 = FS.ReplaceUrlSpacing(URL)
 	local Getrequest
 	Getrequest = request({
-		Url = URL,
+		Url = URL2,
 		Method = METHOD,
 		Headers = HEADERS,
 	})
