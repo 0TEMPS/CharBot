@@ -3,8 +3,9 @@
 CHAR-BOT ]=] 
 
 -- Version
+
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.2 (Pre-Release)"
+local VersionNumber = "5.3.3 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -32,8 +33,6 @@ local BotConfig = {
 		-- // -- // -- // -- 
 		["Log-Commands"] = true,
 		-- // -- // -- // -- 
-		["SendToDiscord"] = true, 
-		-- // -- // -- // -- 
 		["NativeCurrency"] = "USD", 
 		["CurrencySymbol"] = "$", -- keep in mind some currency symbols will get # by roblox.
 		-- // -- // -- // -- 
@@ -45,13 +44,6 @@ local BotConfig = {
 			FillTrans1 = 0.75,
 			OutlineTrans = 0,
 		},
-		-- // -- // -- // -- 
-		["TargetHighlight"] = { -- Color and transparency of the target highlight effect
-			FillColor1 = Color3.new(0, 0.866667, 1),
-			OutlineColor1 = Color3.new(1, 0, 0.0156863),
-			FillTrans1 = 0.75,
-			OutlineTrans = 0,
-		},
 	},
 	-- // -- // -- // -- 
 	["Chat Settings"] = {
@@ -59,14 +51,12 @@ local BotConfig = {
 		ChatLoadingOutputs = true, -- Bot will chat loading messages in the roblox chat.
 		ChatStartupGreeting = true, -- Bot will greet the player on startup.
 		ChatErrorLogs = true, -- Bot chat error logs when errors are caught. (Only works if error logging is enabled)
-		ChatPrefix = "[💬] "
 
 	},
 	-- // -- // -- // -- 
 	["API Keys"] = {
-		APININJA_KEY = "cnXsRuNZJiV42yBy4AWfBA==poI28uJMFKCryeGR",
-		DISCORD_WEBHOOK = "",
-		RBLX_TRADE_SESS = ""
+		APININJA_KEY = "JlqHW95ZeE38VnjxRVrbzpMuUGUf1USGgqssQPag",
+		RBLX_TRADE_SESS = "KEY-HERE"
 	},
 	-- // -- // -- // -- 
 	-- // DEBUG SETTINGS \\ --
@@ -113,6 +103,7 @@ local ClientInfo = {
 		ClientStartTime = os.time(),
 
 		RigType = Players.LocalPlayer.Character.Humanoid.RigType,
+		ValidAPINinjaKey = false
 
 
 
@@ -126,6 +117,11 @@ local ClientInfo = {
 	},
 }
 
+if BotConfig["API Keys"].APININJA_KEY == "" or BotConfig["API Keys"].APININJA_KEY == "KEY-HERE" then
+else
+	ClientInfo.BotInfo.ValidAPINinjaKey = true
+end
+
 local Log = {}
 Log[ClientInfo["BotInfo"].BotPath] = tick()
 
@@ -136,6 +132,9 @@ local Humanoid = ClientInfo["BotInfo"].BotHumanoid
 local CLP = BotConfig["Chat Settings"].ChatPublicly
 local CLO = BotConfig["Chat Settings"].ChatLoadingOutputs
 local CEL = BotConfig["Chat Settings"].ChatErrorLogs
+
+local HLTable = BotConfig["General Settings"]["OwnerHighlight"]
+local TargetHLTable = BotConfig["General Settings"]["OwnerHighlight"]
 
 local Greetings = BotConfig["General Settings"].Greetings
 local Currency = string.lower(BotConfig["General Settings"].NativeCurrency)
@@ -151,7 +150,6 @@ local AutoJumpWhenSitting = BotConfig["General Settings"].AutoJumpWhenSitting
 local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
 
 
-FS.SetChatPrefix(BotConfig["Chat Settings"].ChatPrefix)
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.Report("FunctionService API Loaded.",CLO)
@@ -457,6 +455,11 @@ function PingTest()
 	local headers = {
 		["X-Api-Key"] = BotConfig["API Keys"].APININJA_KEY
 	}
+	
+	if ClientInfo.BotInfo.ValidAPINinjaKey == false then
+		ResponseTable["https://api.api-ninjas.com"] = "<font color='#e30505'>UNABLE TO CONNECT (INVAID KEY)</font>"
+	else
+	
 	local Getrequest
 	Getrequest = request({
 		Url = "https://api.api-ninjas.com/v1/facts?limit=1",
@@ -465,9 +468,10 @@ function PingTest()
 	})
 
 	if Getrequest.Success == true then
-		ResponseTable["https://api.api-ninjas.com"] = "<font color='#05e338'>CONNECTED</font>"
+			ResponseTable["https://api.api-ninjas.com"] = "<font color='#05e338'>CONNECTED</font>"
 	else
 		ResponseTable["https://api.api-ninjas.com"] = "<font color='#e30505'>UNABLE TO CONNECT</font>"
+	end
 	end
 	wait(0.3)
 	local Getrequest
@@ -516,6 +520,9 @@ SetOwner(CurrentOwner)
 FS.Report(FS.TestConnection(),CLO)
 
 local OwnerPlayerInstance = Players:FindFirstChild(CurrentOwner)
+local OwnerCharacter = OwnerPlayerInstance.Character
+
+FS.CreateHightLight(OwnerCharacter)
 
 
 local CommandsTable = {
@@ -573,7 +580,7 @@ local CommandsTable = {
 	end,
 
 	[".follow"] = function(Arg)
-
+		
 		wait(1)
 		CurrentlyWalkingToOwner = false
 		wait(1)
@@ -1095,12 +1102,12 @@ local CommandsTable = {
 			}
 
 			local CityName = string.sub(Arg, 7)
-			
-			
-			
+
+
+
 			print("https://api.api-ninjas.com/v1/city?name="..CityName)
 			local CityInfo = FS.Request("https://api.api-ninjas.com/v1/city?name="..CityName,"GET",headers)
-		
+
 			if CityInfo["error"] ~= nil then
 				FS.Report(CityInfo["error"],CLP)
 
@@ -1259,14 +1266,14 @@ local CommandsTable = {
 		FS.Report("CharBot was created by 00temps, hopefully should be released to the public sometime in march 2024.",CLP)
 		wait(0.3)
 	end,
-	
+
 	[".trendingcrypto"] = function()
 		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
 		local CoinsList = CoinInfo.coins
-		
+
 		local Coin1 = CoinsList[1].item
 		local Coin1Data = Coin1.data
-		
+
 		local CoinPrice = tostring(Coin1Data.price):gsub("%$", "")
 		print(CoinPrice)
 		if tonumber(CoinPrice) < 1 then
@@ -1275,17 +1282,17 @@ local CommandsTable = {
 			end
 		end
 		FS.Report("The #1 trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
-		
+
 		wait(0.3)
-		
+
 		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",OwnerPlayerInstance)
 		if table.find(ApprovalWords,string.lower(Question1)) then
 			local Question2 = FS.Prompt("Which Number? (1-14)",OwnerPlayerInstance)
-				if table.find(DisapprovalWords,string.lower(Question2)) then
-				else
+			if table.find(DisapprovalWords,string.lower(Question2)) then
+			else
 				local Coin1 = CoinsList[tonumber(Question2)].item
 				local Coin1Data = Coin1.data
-				
+
 				local CoinPrice = tostring(Coin1Data.price):gsub("%$", "")
 				print(CoinPrice)
 				if tonumber(CoinPrice) < 1 then
@@ -1295,19 +1302,25 @@ local CommandsTable = {
 				end
 				FS.Report("The #"..Question2.." trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
 
-					
+
 			end
 		end
 	end,
-	
+
 	[".globalcryptodata"] = function()
 		local MarketData = FS.Get_Request("https://api.coingecko.com/api/v3/global")
-		
+
 		local Data = MarketData.data
-		
-		local MarketCap = MarketData.total_market_cap[Currency]
-		
-		FS.Report("There are currently "..FS.comma_value(Data.active_cryptocurrencies).." active cryptocurrencies, the combined market cap of these is "..FS.abbreviate(MarketCap))
+
+		local MarketCap = Data.market_cap_change_percentage_24h_usd
+
+		local modifierword = "risen "
+
+		if MarketCap < 0 then
+			modifierword = "dropped by "
+		end
+
+		FS.Report("There are currently "..FS.comma_value(Data.active_cryptocurrencies).." active cryptocurrencies, the crypto market has "..modifierword..FS.rounddecimal(MarketCap).."% in the past 24 hours.",CLP)
 	end,
 
 
