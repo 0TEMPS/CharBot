@@ -73,9 +73,9 @@ local Player = ClientInfo["BotInfo"].BotPath
 local Character = ClientInfo["BotInfo"].BotCharacter
 local Humanoid = ClientInfo["BotInfo"].BotHumanoid
 
-local CLP = BotConfig["Chat Settings"].ChatPublicly
-local CLO = BotConfig["Chat Settings"].ChatLoadingOutputs
-local CEL = BotConfig["Chat Settings"].ChatErrorLogs
+local CLP = _G.BotConfig["Chat Settings"].ChatPublicly
+local CLO = _G.BotConfig["Chat Settings"].ChatLoadingOutputs
+local CEL = _G.BotConfig["Chat Settings"].ChatErrorLogs
 
 local Owner = _G.BotConfig["General Settings"]["OwnerHighlight"]
 
