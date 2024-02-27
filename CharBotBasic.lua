@@ -522,7 +522,7 @@ FS.Report(FS.TestConnection(),CLO)
 local OwnerPlayerInstance = Players:FindFirstChild(CurrentOwner)
 local OwnerCharacter = OwnerPlayerInstance.Character
 
-FS.CreateHightLight(OwnerCharacter, BotConfig["General Settings"].OwnerHighlight)
+FS.CreateHightLight(BotConfig["General Settings"].Owner, BotConfig["General Settings"].OwnerHighlight)
 
 
 local CommandsTable = {
