@@ -1223,7 +1223,7 @@ local CommandsTable = {
 				CoinPrice = tostring(math.floor(CoinPrice * 100) / 100)
 			end
 		end
-		FS.Report("The #1 trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..BotConfig["General Settings"].CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
+		FS.Report("The #1 trending crypto today was "..Coin1.name.." ("..Coin1.symbol.."), it is currently valued at about "..CurrencySymbol..FS.comma_value(CoinPrice).." and is ranked #"..Coin1.market_cap_rank.." in market cap.",CLP)
 
 		wait(0.3)
 
