@@ -511,7 +511,6 @@ local CommandsTable = {
 
 	[".checkenv"] = function()
 		local Env = FS.Environment()
-		FS.Report("Current Enviroment : "..ClientInfo["BotInfo"].CurrentEnvironment,CLP)
 		FS.Report("Executor : "..identifyexecutor(),CLP)
 		FS.Report("Client Version : "..version(),false)
 
