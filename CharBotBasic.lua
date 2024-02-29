@@ -1537,10 +1537,14 @@ function PrintCommandList()
 end
 
 OwnerPlayerInstance.Chatted:Connect(function(msg)
-	print("[➡️] "..msg)	
+	print("[➡️] "..msg)
+	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
+		if CommandIssued == false then
 		if string.find(msg, "%"..CMI) then
+			CommandIssued = true
 			CMV(msg)
+		end
 		end
 	end
 end)
