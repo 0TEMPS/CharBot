@@ -1281,7 +1281,7 @@ local CommandsTable = {
 
 				print("\nSearching for " .. tostring(AutoFilledName) .. "'s Rolimon Stats, UserID : (" .. userid .. ")")
 
-				local RoliTable = FS.Get_Request("https://www.rolimons.com/api/playerassets/"..userid)
+				local RoliTable = FS.Get_Request("https://api.rolimons.com/players/v1/playerassets/"..userid)
 				local totalValue = 0
 				if RoliTable.success == false then
 					FS.Report("Request failed, Rolimons has no profile for "..AutoFilledName,CLP)
@@ -1545,7 +1545,7 @@ OwnerPlayerInstance.Chatted:Connect(function(msg)
 			end
 		end
 	end
-	
+
 	for CMI,CMV in pairs(_G.CustomCommands) do
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
