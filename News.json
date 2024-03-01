@@ -1,7 +1,7 @@
 {
   "News": [
     {
-      "3/1/2024": "Rolimons recently disabled some of their API endpoints, should be fixed but if not let me know."
+      "3/1/2024": "Rolimons recently disabled some of their API endpoints, this was causing CharBot to say people didn't have Rolimons profiles. should be fixed but if not let me know."
     },
     {
       "2/29/2024": "Unoffical release for CharBot Basic, report bugs to me and give me ideas or suggestions of what should be added, thanks for trying out CharBot!"
