@@ -27,20 +27,6 @@ local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 
-local function onInput(input)
-	-- Disable default key handling
-	if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.W or
-			input.KeyCode == Enum.KeyCode.A or
-			input.KeyCode == Enum.KeyCode.S or
-			input.KeyCode == Enum.KeyCode.D then
-			return Enum.ContextActionResult.Sink
-		end
-	end
-end
-
-UserInputService.InputBegan:Connect(onInput)
-
 local ClientInfo = {
 	["BotInfo"] = {
 		BotName = Players.LocalPlayer.Name,
