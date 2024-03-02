@@ -1573,9 +1573,13 @@ local CommandsTable = {
 	
 	-- file system commands
 	
-	[".memstat"] = function()
-		memorystats.getusagebyname("Script")
+	[".iz4compress"] = function()
+		string.lz4compress("hi")
+		wait(2)
+		lz4compress("hi")
 	end,
+	
+
 
 }
 
