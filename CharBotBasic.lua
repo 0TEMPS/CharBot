@@ -283,7 +283,7 @@ end
 
 function SetOwner(NewOwner)
 	CurrentlyWalkingToOwner = true
-	FS.Report("Transfering CMD Ownership to "..tostring(NewOwner)..", please wait.",false)
+	FS.Report("Transfering CMD Ownership to "..tostring(NewOwner)..", please wait.",true)
 
 	FS.CreatePlrLockBrick(tostring(NewOwner), _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
@@ -549,6 +549,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
+				CurrentlyWalkingToOwner = false
 				FS.Report("Attempting to follow "..AutoFilledName.."...",CLP)
 				SetOwner(AutoFilledName)
 			end		 
