@@ -25,6 +25,30 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
+local ContextActionService = game:GetService("ContextActionService")
+
+
+local function onMoveAction(actionName, inputState, inputObject)
+	-- Check if the input is a keyboard input
+	if inputObject.UserInputType == Enum.UserInputType.Keyboard then
+		-- Check if the input is one of the WASD keys
+		if inputObject.KeyCode == Enum.KeyCode.W or
+			inputObject.KeyCode == Enum.KeyCode.A or
+			inputObject.KeyCode == Enum.KeyCode.S or
+			inputObject.KeyCode == Enum.KeyCode.D then
+			-- Return true to consume the input
+			return Enum.ContextActionResult.Sink
+		end
+	end
+end
+
+
+ContextActionService:BindAction("Move", onMoveAction, false, Enum.KeyCode.W, Enum.KeyCode.A, Enum.KeyCode.S, Enum.KeyCode.D)
+
+
+UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceHide
+UserInputService.OverrideMouseIconObject = nil
 
 
 local ClientInfo = {
