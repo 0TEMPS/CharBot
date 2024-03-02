@@ -26,25 +26,22 @@ local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
-local ContextActionService = game:GetService("ContextActionService")
 
-
-local function onMoveAction(actionName, inputState, inputObject)
-	-- Check if the input is a keyboard input
-	if inputObject.UserInputType == Enum.UserInputType.Keyboard then
-		-- Check if the input is one of the WASD keys
-		if inputObject.KeyCode == Enum.KeyCode.W or
-			inputObject.KeyCode == Enum.KeyCode.A or
-			inputObject.KeyCode == Enum.KeyCode.S or
-			inputObject.KeyCode == Enum.KeyCode.D then
-			-- Return true to consume the input
+local function onInput(input)
+	-- Disable default key handling
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.W or
+			input.KeyCode == Enum.KeyCode.A or
+			input.KeyCode == Enum.KeyCode.S or
+			input.KeyCode == Enum.KeyCode.D then
 			return Enum.ContextActionResult.Sink
 		end
 	end
 end
 
+-- Connect the function to the input service
+UserInputService.InputBegan:Connect(onInput)
 
-ContextActionService:BindAction("Move", onMoveAction, false, Enum.KeyCode.W, Enum.KeyCode.A, Enum.KeyCode.S, Enum.KeyCode.D)
 
 
 UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceHide
@@ -1591,6 +1588,10 @@ for i,v in pairs(CommandsTable) do
 	TotalCmds = TotalCmds + 1
 end
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
+for i,v in pairs(_G.CustomCommands) do
+	CustomTotalCmds = CustomTotalCmds + 1
+end
+FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
 PingTest()
 AutoJumpIfSat()
