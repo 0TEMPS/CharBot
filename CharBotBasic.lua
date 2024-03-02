@@ -441,7 +441,7 @@ function PingTest()
 	})
 
 	if Getrequest.Success == true then
-		ResponseTable["https://rblx.trade"] = "<font color='#05e338'>CONNECTED</font>"
+		ResponseTable["https://rblx.trade"] = "<font color='#05e338'>CONNECTED (CSRF Support Not Implemented yet)</font>"
 	else
 		ResponseTable["https://rblx.trade"] = "<font color='#e30505'>UNABLE TO CONNECT</font>"
 	end
