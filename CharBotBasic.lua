@@ -27,6 +27,23 @@ local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 
+local function onInput(input)
+	-- Disable default key handling
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.W or
+			input.KeyCode == Enum.KeyCode.A or
+			input.KeyCode == Enum.KeyCode.S or
+			input.KeyCode == Enum.KeyCode.D then
+			return Enum.ContextActionResult.Sink
+		end
+	end
+end
+
+-- Connect the function to the input service
+UserInputService.InputBegan:Connect(onInput)
+
+
+
 local ClientInfo = {
 	["BotInfo"] = {
 		BotName = Players.LocalPlayer.Name,
@@ -524,9 +541,8 @@ local CommandsTable = {
 
 	[".follow"] = function(Arg)
 
-		wait(1)
+		
 		CurrentlyWalkingToOwner = false
-		wait(1)
 		if string.sub(Arg, 1, 7) == ".follow" then
 			local PlayerName = string.sub(Arg, 9)
 			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
@@ -538,6 +554,11 @@ local CommandsTable = {
 			end		 
 		end
 
+	end,
+	
+	[".return"] = function(Arg)
+		FS.Report("Returning to owner...",CLP)
+				SetOwner(Owner)	
 	end,
 
 
@@ -1209,6 +1230,7 @@ local CommandsTable = {
 		FS.Report("CharBot was created by 00temps.",CLP)
 		wait(0.3)
 	end,
+	
 
 	[".trendingcrypto"] = function()
 		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
@@ -1567,7 +1589,6 @@ for i,v in pairs(CommandsTable) do
 	TotalCmds = TotalCmds + 1
 end
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
-local CustomTotalCmds = 0
 for i,v in pairs(_G.CustomCommands) do
 	CustomTotalCmds = CustomTotalCmds + 1
 end
