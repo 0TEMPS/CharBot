@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.4 (Pre-Release)"
+local VersionNumber = "5.3.5 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -1620,6 +1620,23 @@ local CommandsTable = {
 				print("if success true")
 				FS.Report("Charbot/"..FileName.." : Writen successfully",CLP)
 			end
+		end
+	end,
+	
+	[".deletefile"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".deletefile" then
+			local FileName = string.sub(Arg, 13)
+			
+			if isfile("CharBot/"..FileName) == true then
+				local Prompt = FS.Prompt("Are you sure you want to delete "..FileName.."?",OwnerPlayerInstance)
+				
+				if table.find(ApprovalWords, Prompt) then
+					delfile("CharBot/"..FileName)
+				end
+			else
+				FS.Report("Couldn't find ".."CharBot/"..FileName,CLP)
+			end
+
 		end
 	end,
 }
