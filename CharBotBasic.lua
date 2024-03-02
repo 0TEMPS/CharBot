@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.3 (Pre-Release)"
+local VersionNumber = "5.3.4 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -1593,12 +1593,12 @@ local CommandsTable = {
 			local FileName = string.sub(Arg, 11)
 		
 			local success, response = pcall(function()
-				readfile("Charbot/"..FileName)
+				contents = readfile("Charbot/"..FileName)
 			end)
 			
 			if success then
 				print("if success true")
-				print(response)
+				print(contents)
 			end
 		end
 	end,
@@ -1606,9 +1606,11 @@ local CommandsTable = {
 	[".writefile"] = function(Arg)
 		if string.sub(Arg, 1, 10) == ".writefile" then
 			local FileName = string.sub(Arg, 12)
-
+			
+			local Prompt = FS.Prompt("What should I write to the file?",OwnerPlayerInstance)
+			
 			local success, response = pcall(function()
-				readfile("Charbot/"..FileName)
+				writefile("Charbot/"..FileName,Prompt)
 			end)
 
 			if success then
