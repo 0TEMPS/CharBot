@@ -1237,8 +1237,8 @@ local CommandsTable = {
 	end,
 	
 	[".removecmdownership"] = function(Arg)
-		if string.sub(Arg, 1, 16) == ".addcmdownership" then
-			local PlayerName = string.sub(Arg, 18)
+		if string.sub(Arg, 1, 19) == ".removecmdownership" then
+			local PlayerName = string.sub(Arg, 21)
 			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
 			if AutoFilledName == "Invalid Username." then
 				print(AutoFilledName)
