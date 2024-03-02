@@ -1581,6 +1581,7 @@ for i,v in pairs(CommandsTable) do
 	TotalCmds = TotalCmds + 1
 end
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
+local CustomTotalCmds = 0
 for i,v in pairs(_G.CustomCommands) do
 	CustomTotalCmds = CustomTotalCmds + 1
 end
