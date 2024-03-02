@@ -27,22 +27,6 @@ local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 
-local function onInput(input)
-	-- Disable default key handling
-	if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.W or
-			input.KeyCode == Enum.KeyCode.A or
-			input.KeyCode == Enum.KeyCode.S or
-			input.KeyCode == Enum.KeyCode.D then
-			return Enum.ContextActionResult.Sink
-		end
-	end
-end
-
--- Connect the function to the input service
-UserInputService.InputBegan:Connect(onInput)
-
-
 
 local ClientInfo = {
 	["BotInfo"] = {
@@ -109,6 +93,7 @@ local DisapprovalWords = _G.BotConfig["General Settings"].DisapprovalWords
 local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
+local CommandOwnershipList = {}
 
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
@@ -283,7 +268,7 @@ end
 
 function SetOwner(NewOwner)
 	CurrentlyWalkingToOwner = true
-	FS.Report("Transfering CMD Ownership to "..tostring(NewOwner)..", please wait.",true)
+	FS.Report("Attempting to follow "..tostring(NewOwner).." please wait...",CLP)
 
 	FS.CreatePlrLockBrick(tostring(NewOwner), _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
@@ -1231,6 +1216,42 @@ local CommandsTable = {
 		wait(0.3)
 	end,
 	
+	[".addcmdownership"] = function(Arg)
+		if string.sub(Arg, 1, 16) == ".addcmdownership" then
+			local PlayerName = string.sub(Arg, 18)
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				print(AutoFilledName)
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				if table.find(CommandOwnershipList, AutoFilledName) then
+					FS.Report(AutoFilledName.." Already has command ownership!",CLP)
+				else
+					table.insert(CommandOwnershipList, AutoFilledName)
+					FS.Report(AutoFilledName.." has been added to the command ownership list.",CLP)
+				end
+			end
+		end
+	end,
+	
+	[".removecmdownership"] = function(Arg)
+		if string.sub(Arg, 1, 16) == ".addcmdownership" then
+			local PlayerName = string.sub(Arg, 18)
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				print(AutoFilledName)
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				if table.find(CommandOwnershipList, AutoFilledName) then
+					FS.Report(AutoFilledName.." Does not have command ownership.",CLP)
+				else
+					table.remove(CommandOwnershipList, AutoFilledName)
+					FS.Report(AutoFilledName.." has been removed from the command ownership list.",CLP)
+				end
+			end
+		end
+	end,
+	
 
 	[".trendingcrypto"] = function()
 		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
@@ -1556,7 +1577,7 @@ function PrintCommandList()
 	end
 end
 
-OwnerPlayerInstance.Chatted:Connect(function(msg)
+function ChatFromOwnerDetect(msg)
 	print("[➡️] "..msg)
 	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
@@ -1576,8 +1597,27 @@ OwnerPlayerInstance.Chatted:Connect(function(msg)
 			end
 		end
 	end
+end
+
+for _,p in ipairs(Players:GetPlayers()) do
+	p.Chatted:Connect(function(msg)
+		if table.find(CommandOwnershipList, tostring(p)) then
+			print("command from owner found")
+			ChatFromOwnerDetect(msg)
+		end
+	end)
+end
+
+Players.PlayerAdded:Connect(function(p)
+	p.Chatted:Connect(function(msg)
+		if table.find(CommandOwnershipList, tostring(p)) then
+			print("command from owner found")
+			ChatFromOwnerDetect(msg)
+		end
+	end)
 end)
 
+AutoJumpIfSat()
 CBD.CreateBotConfigTab()
 wait(0.1)
 CBD.BotConfigSettings(_G.BotConfig)
@@ -1595,5 +1635,5 @@ for i,v in pairs(_G.CustomCommands) do
 end
 FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
+
 PingTest()
-AutoJumpIfSat()
