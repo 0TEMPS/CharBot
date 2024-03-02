@@ -217,7 +217,7 @@ function LimitedInv(Playername)
 		local userid = Players:GetUserIdFromNameAsync(Playername)
 		print("Searching for " .. tostring(Playername) .. "'s Rolimon Stats ID : (" .. userid .. ")",CLP)
 
-		local rolitable = FS.Get_Request("https://www.rolimons.com/api/playerassets/" .. userid)
+		local rolitable = FS.Get_Request("https://api.rolimons.com/players/v1/playerassets/" .. userid)
 		local counter = 0
 		local itemstosay = {}
 		for i,v in pairs(rolitable.playerAssets) do
