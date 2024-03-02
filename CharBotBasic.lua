@@ -42,12 +42,6 @@ end
 -- Connect the function to the input service
 UserInputService.InputBegan:Connect(onInput)
 
-
-
-UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceHide
-UserInputService.OverrideMouseIconObject = nil
-
-
 local ClientInfo = {
 	["BotInfo"] = {
 		BotName = Players.LocalPlayer.Name,
