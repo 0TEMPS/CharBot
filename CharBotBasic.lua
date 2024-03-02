@@ -1570,6 +1570,12 @@ local CommandsTable = {
 			end
 		end	
 	end,
+	
+	-- file system commands
+	
+	[".memstat"] = function()
+		memorystats.getusagebyname("Script")
+	end,
 
 }
 
