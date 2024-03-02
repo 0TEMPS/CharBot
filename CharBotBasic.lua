@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.5 (Pre-Release)"
+local VersionNumber = "5.3.6 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -94,6 +94,8 @@ local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 local CommandOwnershipList = {}
+
+local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
 
@@ -291,7 +293,7 @@ function SetOwner(NewOwner)
 	end
 end
 
-function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
+function WalkTooTarget(TargetPart, returntoowner, MessageToSay, playerwhoissuedcommand)
 	FS.Report("Target "..tostring(TargetPart).." found, attempting to walk there...",CLP)
 
 	FS.CreatePlrLockBrick(TargetPart, _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TestPFPart")
@@ -306,7 +308,7 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
 			if returntoowner == true then
 				FS.Report(MessageToSay,CLP)
 				wait(2)
-				SetOwner(_G.BotConfig["General Settings"].Owner)
+				SetOwner(playerwhoissuedcommand)
 				wait(1)
 				parttowalktoo:Destroy()
 			end
@@ -877,7 +879,7 @@ local CommandsTable = {
 					GreetingMessage = "🌙 Good Evening"
 				end
 
-				WalkTooTarget(AutoFilledName, true, GreetingMessage.." "..tostring(AutoFilledName)..". "..Greetings[math.random(1,#Greetings)])
+				WalkTooTarget(AutoFilledName, true, GreetingMessage.." "..tostring(AutoFilledName)..". "..Greetings[math.random(1,#Greetings)], LastCommandIssuedby)
 			end	
 		end
 	end,
@@ -1632,6 +1634,27 @@ local CommandsTable = {
 				
 				if table.find(ApprovalWords, Prompt) then
 					delfile("CharBot/"..FileName)
+					wait(0.5)
+					FS.Report("Deleted ".."CharBot/"..FileName,CLP)
+				end
+			else
+				FS.Report("Couldn't find ".."CharBot/"..FileName,CLP)
+			end
+
+		end
+	end,
+	
+	[".exefile"] = function(Arg)
+		if string.sub(Arg, 1, 8) == ".exefile" then
+			local FileName = string.sub(Arg, 10)
+
+			if isfile("CharBot/"..FileName) == true then
+				local Prompt = FS.Prompt("Are you sure you want to execute "..FileName.."?",OwnerPlayerInstance)
+
+				if table.find(ApprovalWords, Prompt) then
+					loadfile("CharBot/"..FileName)
+					wait(0.5)
+					FS.Report("executing ".."CharBot/"..FileName,CLP)
 				end
 			else
 				FS.Report("Couldn't find ".."CharBot/"..FileName,CLP)
@@ -1647,13 +1670,14 @@ function PrintCommandList()
 	end
 end
 
-function ChatFromOwnerDetect(msg)
+function ChatFromOwnerDetect(msg, player)
 	print("[➡️] "..msg)
 	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
+				LastCommandIssuedby = player
 				CMV(msg)
 			end
 		end
@@ -1663,6 +1687,7 @@ function ChatFromOwnerDetect(msg)
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
+				LastCommandIssuedby = player
 				CMV(msg)
 			end
 		end
@@ -1672,7 +1697,7 @@ end
 for _,p in ipairs(Players:GetPlayers()) do
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			ChatFromOwnerDetect(msg)
+			ChatFromOwnerDetect(msg, p)
 		end
 	end)
 end
@@ -1680,7 +1705,7 @@ end
 Players.PlayerAdded:Connect(function(p)
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			ChatFromOwnerDetect(msg)
+			ChatFromOwnerDetect(msg, p)
 		end
 	end)
 end)
