@@ -1604,7 +1604,6 @@ end
 for _,p in ipairs(Players:GetPlayers()) do
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			print("command from owner found")
 			ChatFromOwnerDetect(msg)
 		end
 	end)
@@ -1613,7 +1612,6 @@ end
 Players.PlayerAdded:Connect(function(p)
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			print("command from owner found")
 			ChatFromOwnerDetect(msg)
 		end
 	end)
