@@ -586,7 +586,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner)
+				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner, LastCommandIssuedby)
 			end	
 		end
 	end,
@@ -1275,9 +1275,9 @@ local CommandsTable = {
 
 		wait(0.3)
 
-		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",OwnerPlayerInstance)
+		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 		if table.find(ApprovalWords,string.lower(Question1)) then
-			local Question2 = FS.Prompt("Which Number? (1-14)",OwnerPlayerInstance)
+			local Question2 = FS.Prompt("Which Number? (1-14)",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 			if table.find(DisapprovalWords,string.lower(Question2)) then
 			else
 				local Coin1 = CoinsList[tonumber(Question2)].item
@@ -1336,7 +1336,7 @@ local CommandsTable = {
 					if RoliTable.playerPrivacyEnabled == true then
 						FS.Report("Player inventory scan failed, "..AutoFilledName.." has a private inventory",CLP)
 						wait(0.2)
-						local Prompt = FS.Prompt("Want to search their avatar for limiteds instead?",OwnerPlayerInstance)
+						local Prompt = FS.Prompt("Want to search their avatar for limiteds instead?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 						if table.find(ApprovalWords,string.lower(Prompt)) then
 							WearingLimiteds(AutoFilledName)
@@ -1356,7 +1356,7 @@ local CommandsTable = {
 						if #tostring(math.floor(totalValue)) >= 7 then
 							FS.Report(tostring(AutoFilledName) .."'s Total Value is : " .. FS.abbreviate(totalValue),CLP)
 							wait(0.1)
-							local Prompt = FS.Prompt("Do you want more information on this players assets?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Do you want more information on this players assets?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								LimitedInv(AutoFilledName)
@@ -1364,7 +1364,7 @@ local CommandsTable = {
 						else
 							FS.Report(tostring(AutoFilledName) .. "'s Total Value is : " .. FS.comma_value(totalValue),CLP)
 							wait(0.1)
-							local Prompt = FS.Prompt("Do you want more information on this players assets?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Do you want more information on this players assets?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								LimitedInv(AutoFilledName)
@@ -1425,7 +1425,7 @@ local CommandsTable = {
 							wait(0.2)
 							FS.Report("Sale Occured "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 							wait(0.8)
-							local Prompt = FS.Prompt("Want me to find more sales data for the item?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Want me to find more sales data for the item?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								local StatsTable = FS.Get_Request("https://rblx.trade/api/v2/catalog/"..itemshort.."/sales/statistics")
@@ -1441,7 +1441,7 @@ local CommandsTable = {
 							wait(0.2)
 							FS.Report("Sale Occured "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 							wait(0.8)
-							local Prompt = FS.Prompt("Want me to find more sales data for the item?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Want me to find more sales data for the item?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								local StatsTable = FS.Get_Request("https://rblx.trade/api/v2/catalog/"..itemshort.."/sales/statistics")
@@ -1529,7 +1529,7 @@ local CommandsTable = {
 			else
 				LimitedInv(AutoFilledName)
 				wait(0.5)
-				local Prompt = FS.Prompt("Want me to find more details on any of their items?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("Want me to find more details on any of their items?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
@@ -1610,7 +1610,7 @@ local CommandsTable = {
 		if string.sub(Arg, 1, 10) == ".writefile" then
 			local FileName = string.sub(Arg, 12)
 			
-			local Prompt = FS.Prompt("What should I write to the file?",OwnerPlayerInstance)
+			local Prompt = FS.Prompt("What should I write to the file?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 			
 			local success, response = pcall(function()
 				writefile("Charbot/"..FileName,Prompt)
@@ -1630,7 +1630,7 @@ local CommandsTable = {
 			local FileName = string.sub(Arg, 13)
 			
 			if isfile("CharBot/"..FileName) == true then
-				local Prompt = FS.Prompt("Are you sure you want to delete "..FileName.."?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("Are you sure you want to delete "..FileName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 				
 				if table.find(ApprovalWords, Prompt) then
 					delfile("CharBot/"..FileName)
@@ -1649,7 +1649,7 @@ local CommandsTable = {
 			local FileName = string.sub(Arg, 10)
 
 			if isfile("CharBot/"..FileName) == true then
-				local Prompt = FS.Prompt("Are you sure you want to execute "..FileName.."?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("Are you sure you want to execute "..FileName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(ApprovalWords, Prompt) then
 					loadfile("CharBot/"..FileName)
