@@ -424,7 +424,7 @@ function PingTest()
 	wait(0.3)
 	local Getrequest
 	Getrequest = request({
-		Url = "https://www.rolimons.com/api/activity2",
+		Url = "https://api.rolimons.com/players/v1/playerassets/2626177908",
 		Method = "GET",
 	})
 
