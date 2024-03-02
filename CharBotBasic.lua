@@ -68,7 +68,7 @@ end
 local Log = {}
 Log[ClientInfo["BotInfo"].BotPath] = tick()
 
-
+makefolder("CharBot")
 
 local Player = ClientInfo["BotInfo"].BotPath
 local Character = ClientInfo["BotInfo"].BotCharacter
@@ -542,10 +542,10 @@ local CommandsTable = {
 		end
 
 	end,
-	
+
 	[".return"] = function(Arg)
 		FS.Report("Returning to owner...",CLP)
-				SetOwner(Owner)	
+		SetOwner(Owner)	
 	end,
 
 
@@ -1217,7 +1217,7 @@ local CommandsTable = {
 		FS.Report("CharBot was created by 00temps.",CLP)
 		wait(0.3)
 	end,
-	
+
 	[".addcmdownership"] = function(Arg)
 		if string.sub(Arg, 1, 16) == ".addcmdownership" then
 			local PlayerName = string.sub(Arg, 18)
@@ -1235,7 +1235,7 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 	[".removecmdownership"] = function(Arg)
 		if string.sub(Arg, 1, 19) == ".removecmdownership" then
 			local PlayerName = string.sub(Arg, 21)
@@ -1253,7 +1253,7 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 
 	[".trendingcrypto"] = function()
 		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
@@ -1570,17 +1570,53 @@ local CommandsTable = {
 			end
 		end	
 	end,
-	
+
 	-- file system commands
-	
-	[".iz4compress"] = function()
-		string.lz4compress("hi")
-		wait(2)
-		lz4compress("hi")
+
+	[".folderstatus"] = function(Arg)
+			if isfolder("CharBot") == true then
+				FS.Report("CharBot workspace folder is valid.",CLP)
+			else
+				FS.Report("Unable to find CharBot workspace folder, creating one now.",CLP)
+				makefolder("CharBot")
+			end
 	end,
 	
+	[".listfiles"] = function(Arg)
+		for i,v in pairs(listfiles("CharBot")) do
+			FS.Report(tostring(v),CLP)
+		end
+	end,
+	
+	[".readfile"] = function(Arg)
+		if string.sub(Arg, 1, 9) == ".readfile" then
+			local FileName = string.sub(Arg, 11)
+		
+			local success, response = pcall(function()
+				readfile("Charbot/"..FileName)
+			end)
+			
+			if success then
+				print("if success true")
+				print(response)
+			end
+		end
+	end,
+	
+	[".writefile"] = function(Arg)
+		if string.sub(Arg, 1, 10) == ".writefile" then
+			local FileName = string.sub(Arg, 12)
 
+			local success, response = pcall(function()
+				readfile("Charbot/"..FileName)
+			end)
 
+			if success then
+				print("if success true")
+				print(response)
+			end
+		end
+	end,
 }
 
 function PrintCommandList()
