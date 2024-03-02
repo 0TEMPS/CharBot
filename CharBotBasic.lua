@@ -95,6 +95,8 @@ local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 local CommandOwnershipList = {}
 
+table.insert(CommandOwnershipList, CurrentOwner)
+
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.Report("FunctionService API Loaded.",CLO)
