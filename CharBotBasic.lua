@@ -540,8 +540,6 @@ local CommandsTable = {
 	end,
 
 	[".follow"] = function(Arg)
-
-		
 		CurrentlyWalkingToOwner = false
 		if string.sub(Arg, 1, 7) == ".follow" then
 			local PlayerName = string.sub(Arg, 9)
@@ -550,6 +548,7 @@ local CommandsTable = {
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
 				CurrentlyWalkingToOwner = false
+				wait(1)
 				FS.Report("Attempting to follow "..AutoFilledName.."...",CLP)
 				SetOwner(AutoFilledName)
 			end		 
