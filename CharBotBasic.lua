@@ -39,7 +39,6 @@ local function onInput(input)
 	end
 end
 
--- Connect the function to the input service
 UserInputService.InputBegan:Connect(onInput)
 
 local ClientInfo = {
