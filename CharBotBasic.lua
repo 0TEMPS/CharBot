@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.6 (Pre-Release)"
+local VersionNumber = "5.3.5 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -892,9 +892,9 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				local Prompt = FS.Prompt("What Should I tell "..AutoFilledName.."?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("What Should I tell "..AutoFilledName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
-				WalkTooTarget(AutoFilledName, true, Prompt)
+				WalkTooTarget(AutoFilledName, true, Prompt, LastCommandIssuedby)
 			end	
 		end
 	end,
