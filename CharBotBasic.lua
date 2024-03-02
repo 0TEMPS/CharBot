@@ -1594,11 +1594,12 @@ local CommandsTable = {
 		
 			local success, response = pcall(function()
 				contents = readfile("Charbot/"..FileName)
+				print(contents)
 			end)
 			
 			if success then
-				print("if success true")
-				print(contents)
+				print("file content collected, reporting..")
+				FS.Report("Charbot/"..FileName.." : "..contents,CLP)
 			end
 		end
 	end,
@@ -1611,11 +1612,13 @@ local CommandsTable = {
 			
 			local success, response = pcall(function()
 				writefile("Charbot/"..FileName,Prompt)
+				print(FileName)
+				print(Prompt)
 			end)
 
 			if success then
 				print("if success true")
-				print(response)
+				FS.Report("Charbot/"..FileName.." : Writen successfully",CLP)
 			end
 		end
 	end,
