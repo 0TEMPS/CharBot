@@ -1706,8 +1706,9 @@ local CommandsTable = {
 	
 	[".bring"] = function()
 		stopbang = true
-		CurrentlyWalkingToOwner = false
 		
+		CurrentlyWalkingToOwner = false
+		wait(0.5)
 		local OwnerHRP = Players:FindFirstChild(tostring(LastCommandIssuedby))
 		OwnerHRP = OwnerHRP.Character.HumanoidRootPart
 		
