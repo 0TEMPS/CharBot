@@ -1671,13 +1671,14 @@ local CommandsTable = {
 	end,
 	
 	[".bng"] = function(Arg)
-		if string.sub(Arg, 1, 13) == ".plrlockbrick" then
-			local PlayerArg = string.sub(Arg, 15)
-
+		if string.sub(Arg, 1, 4) == ".bng" then
+			local PlayerArg = string.sub(Arg, 6)
 			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
 			if PlayerArg == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
+				CurrentlyWalkingToOwner = false
+				wait(1)
 				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
 				wait(1)
 				local brick2 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
