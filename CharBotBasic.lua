@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.5 (Pre-Release)"
+local VersionNumber = "5.3.7 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -1697,7 +1697,7 @@ end
 for _,p in ipairs(Players:GetPlayers()) do
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			ChatFromOwnerDetect(msg, p)
+			ChatFromOwnerDetect(msg, tostring(p))
 		end
 	end)
 end
@@ -1705,7 +1705,7 @@ end
 Players.PlayerAdded:Connect(function(p)
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
-			ChatFromOwnerDetect(msg, p)
+			ChatFromOwnerDetect(msg, tostring(p))
 		end
 	end)
 end)
