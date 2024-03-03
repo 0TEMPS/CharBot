@@ -340,7 +340,8 @@ function FS.AutoFillPlayer(String)
 	end
 	
 	if string.find(player, '%*') then
-		return player
+		
+		return string.gsub(player, '%*', '')
 	end
 	
 	local returnstring = FS.FindUser(player)
