@@ -158,6 +158,21 @@ end
 function CBD.AddCommands(CommandTable)
 	local What = CommandList:CreateSection("Command List")
 	for i,v in pairs(CommandTable) do
+		local info = debug.getinfo(v)
+		local LabelText = ""
+		
+		if info and info.isvararg then
+			-- If it has arguments, print them
+			local args = {}
+			for i = 1, info.nparams do
+				args[i] = info.paramnames[i]
+			end
+			print("Arguments:", table.concat(args, ", "))
+			LabelText = i.."("..table.concat(args, ", ")..")"
+		else
+			LabelText = i.."(No Arguments Required)"
+		end
+		
 		local Label = CommandList:CreateLabel(tostring(i))
 	end
 end
