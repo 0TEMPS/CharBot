@@ -166,7 +166,7 @@ CBD.NewsTab(FS.Get_Request("https://raw.githubusercontent.com/0TEMPS/CharBot/mai
 
 local parttowalktoo = nil
 
-
+local stopbang = false
 
 function WearingLimiteds(Playername)
 	local userid = Players:GetUserIdFromNameAsync(Playername)
@@ -1670,7 +1670,7 @@ local CommandsTable = {
 		end
 	end,
 	
-	[".plrlockbrick"] = function(Arg)
+	[".bng"] = function(Arg)
 		if string.sub(Arg, 1, 13) == ".plrlockbrick" then
 			local PlayerArg = string.sub(Arg, 15)
 
@@ -1678,12 +1678,28 @@ local CommandsTable = {
 			if PlayerArg == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
+				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
 				wait(1)
-				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
+				local brick2 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
+				
+				while true do
+					
+					FS.PathfindPart(brick1, Character, Humanoid)
+					wait(0.01)
+					FS.PathfindPart(brick2, Character, Humanoid)
+
+					if stopbang == true then
+						break
+					end
+				end
 			end
 		end
 	end,
+	
+	[".stopbng"] = function()
+		stopbang = true
+	end,
+	
 
 }
 
