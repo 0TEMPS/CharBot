@@ -1703,6 +1703,16 @@ local CommandsTable = {
 		stopbang = true
 		CurrentlyWalkingToOwner = false
 	end,
+	
+	[".bring"] = function()
+		stopbang = true
+		CurrentlyWalkingToOwner = false
+		
+		local OwnerHRP = Players:FindFirstChild(tostring(LastCommandIssuedby))
+		OwnerHRP = OwnerHRP.Character.HumanoidRootPart
+		
+		Character.HumanoidRootPart.CFrame = OwnerHRP.CFrame
+	end,
 
 
 }
