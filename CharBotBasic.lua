@@ -1671,8 +1671,8 @@ local CommandsTable = {
 	end,
 
 	[".bang"] = function(Arg)
-		if string.sub(Arg, 1, 4) == ".bng" then
-			local PlayerArg = string.sub(Arg, 6)
+		if string.sub(Arg, 1, 5) == ".bang" then
+			local PlayerArg = string.sub(Arg, 7)
 			CurrentlyWalkingToOwner = false
 			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
 			if PlayerArg == "Invalid username." then
