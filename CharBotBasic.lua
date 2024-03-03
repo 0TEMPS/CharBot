@@ -1680,7 +1680,7 @@ local CommandsTable = {
 			else
 				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
 				wait(1)
-				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(5,0,0), false, "BangPart2")
+				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
 			end
 		end
 	end,
