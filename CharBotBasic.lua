@@ -1525,6 +1525,21 @@ local CommandsTable = {
 			end
 		end	
 	end,
+	
+	[".plrlockbrick"] = function(Arg)
+		if string.sub(Arg, 1, 13) == ".plrlockbrick" then
+			local PlayerArg = string.sub(Arg, 15)
+
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if PlayerArg == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
+				wait(1)
+				FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(-5,0,0), false, "BangPart1")
+			end
+		end
+	end,
 
 }
 
