@@ -1576,19 +1576,19 @@ local CommandsTable = {
 	-- file system commands
 
 	[".folderstatus"] = function(Arg)
-			if isfolder("CharBot") == true then
-				FS.Report("CharBot workspace folder is valid.",CLP)
-			else
-				FS.Report("Unable to find CharBot workspace folder, creating one now.",CLP)
-				makefolder("CharBot")
-			end
+		if isfolder("CharBot") == true then
+			FS.Report("CharBot workspace folder is valid.",CLP)
+		else
+			FS.Report("Unable to find CharBot workspace folder, creating one now.",CLP)
+			makefolder("CharBot")
+		end
 	end,
-	
+
 	[".listfiles"] = function(Arg)
 		local numberchatted = 0
 		for i,v in pairs(listfiles("CharBot")) do
 			numberchatted = numberchatted + 1
-			
+
 			if numberchatted > 3 then
 				print(tostring(v))
 			else
@@ -1596,29 +1596,29 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 	[".readfile"] = function(Arg)
 		if string.sub(Arg, 1, 9) == ".readfile" then
 			local FileName = string.sub(Arg, 11)
-		
+
 			local success, response = pcall(function()
 				contents = readfile("Charbot/"..FileName)
 				print(contents)
 			end)
-			
+
 			if success then
 				print("file content collected, reporting..")
 				FS.Report("Charbot/"..FileName.." : "..contents,CLP)
 			end
 		end
 	end,
-	
+
 	[".writefile"] = function(Arg)
 		if string.sub(Arg, 1, 10) == ".writefile" then
 			local FileName = string.sub(Arg, 12)
-			
+
 			local Prompt = FS.Prompt("What should I write to the file?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
-			
+
 			local success, response = pcall(function()
 				writefile("Charbot/"..FileName,Prompt)
 				print(FileName)
@@ -1631,14 +1631,14 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 	[".deletefile"] = function(Arg)
 		if string.sub(Arg, 1, 11) == ".deletefile" then
 			local FileName = string.sub(Arg, 13)
-			
+
 			if isfile("CharBot/"..FileName) == true then
 				local Prompt = FS.Prompt("Are you sure you want to delete "..FileName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
-				
+
 				if table.find(ApprovalWords, Prompt) then
 					delfile("CharBot/"..FileName)
 					wait(0.5)
@@ -1650,7 +1650,7 @@ local CommandsTable = {
 
 		end
 	end,
-	
+
 	[".exefile"] = function(Arg)
 		if string.sub(Arg, 1, 8) == ".exefile" then
 			local FileName = string.sub(Arg, 10)
@@ -1669,38 +1669,41 @@ local CommandsTable = {
 
 		end
 	end,
-	
-	[".bng"] = function(Arg)
+
+	[".bang"] = function(Arg)
 		if string.sub(Arg, 1, 4) == ".bng" then
 			local PlayerArg = string.sub(Arg, 6)
+			CurrentlyWalkingToOwner = false
 			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
 			if PlayerArg == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				CurrentlyWalkingToOwner = false
-				wait(1)
+				stopbang = false
 				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
 				wait(1)
 				local brick2 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
-				
+				SetOwner(AutoFilledName)
 				while true do
-					
+
 					FS.PathfindPart(brick1, Character, Humanoid)
 					wait(0.01)
 					FS.PathfindPart(brick2, Character, Humanoid)
 
 					if stopbang == true then
+						brick1:Destroy()
+						brick2:Destroy()
 						break
 					end
 				end
 			end
 		end
 	end,
-	
-	[".stopbng"] = function()
+
+	[".stopbang"] = function()
 		stopbang = true
+		CurrentlyWalkingToOwner = false
 	end,
-	
+
 
 }
 
