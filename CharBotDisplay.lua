@@ -171,8 +171,9 @@ function CBD.AddCommands(CommandTable)
 			LabelText = i.."("..table.concat(args, ", ")..")"
 		else
 			LabelText = i.."(No Arguments Required)"
+			print(LabelText)
 		end
-		
+		print(LabelText)
 		local Label = CommandList:CreateLabel(tostring(i))
 	end
 end
