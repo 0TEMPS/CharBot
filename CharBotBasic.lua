@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.7 (Pre-Release)"
+local VersionNumber = "5.3.7 (Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
