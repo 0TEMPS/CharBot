@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.3 (Pre-Release)"
+local VersionNumber = "5.3.7 (Pre-Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -25,6 +25,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 local MS = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
 
 
 local ClientInfo = {
@@ -67,7 +68,7 @@ end
 local Log = {}
 Log[ClientInfo["BotInfo"].BotPath] = tick()
 
-
+makefolder("CharBot")
 
 local Player = ClientInfo["BotInfo"].BotPath
 local Character = ClientInfo["BotInfo"].BotCharacter
@@ -92,6 +93,11 @@ local DisapprovalWords = _G.BotConfig["General Settings"].DisapprovalWords
 local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
+local CommandOwnershipList = {}
+
+local LastCommandIssuedby = CurrentOwner
+
+table.insert(CommandOwnershipList, CurrentOwner)
 
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
@@ -217,7 +223,7 @@ function LimitedInv(Playername)
 		local userid = Players:GetUserIdFromNameAsync(Playername)
 		print("Searching for " .. tostring(Playername) .. "'s Rolimon Stats ID : (" .. userid .. ")",CLP)
 
-		local rolitable = FS.Get_Request("https://www.rolimons.com/api/playerassets/" .. userid)
+		local rolitable = FS.Get_Request("https://api.rolimons.com/players/v1/playerassets/" .. userid)
 		local counter = 0
 		local itemstosay = {}
 		for i,v in pairs(rolitable.playerAssets) do
@@ -266,7 +272,7 @@ end
 
 function SetOwner(NewOwner)
 	CurrentlyWalkingToOwner = true
-	FS.Report("Transfering CMD Ownership to "..tostring(NewOwner)..", please wait.",false)
+	FS.Report("Attempting to follow "..tostring(NewOwner).." please wait...",CLP)
 
 	FS.CreatePlrLockBrick(tostring(NewOwner), _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
@@ -287,8 +293,8 @@ function SetOwner(NewOwner)
 	end
 end
 
-function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
-	print("Target "..tostring(TargetPart).." found, attempting to walk there...")
+function WalkTooTarget(TargetPart, returntoowner, MessageToSay, playerwhoissuedcommand)
+	FS.Report("Target "..tostring(TargetPart).." found, attempting to walk there...",CLP)
 
 	FS.CreatePlrLockBrick(TargetPart, _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TestPFPart")
 	local targetchar = game.Workspace:FindFirstChild(tostring(TargetPart))
@@ -302,7 +308,7 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay)
 			if returntoowner == true then
 				FS.Report(MessageToSay,CLP)
 				wait(2)
-				SetOwner(_G.BotConfig["General Settings"].Owner)
+				SetOwner(playerwhoissuedcommand)
 				wait(1)
 				parttowalktoo:Destroy()
 			end
@@ -420,7 +426,7 @@ function PingTest()
 	wait(0.3)
 	local Getrequest
 	Getrequest = request({
-		Url = "https://www.rolimons.com/api/activity2",
+		Url = "https://api.rolimons.com/players/v1/playerassets/2626177908",
 		Method = "GET",
 	})
 
@@ -437,7 +443,7 @@ function PingTest()
 	})
 
 	if Getrequest.Success == true then
-		ResponseTable["https://rblx.trade"] = "<font color='#05e338'>CONNECTED</font>"
+		ResponseTable["https://rblx.trade"] = "<font color='#05e338'>CONNECTED (CSRF Support Not Implemented yet)</font>"
 	else
 		ResponseTable["https://rblx.trade"] = "<font color='#e30505'>UNABLE TO CONNECT</font>"
 	end
@@ -523,21 +529,25 @@ local CommandsTable = {
 	end,
 
 	[".follow"] = function(Arg)
-
-		wait(1)
 		CurrentlyWalkingToOwner = false
-		wait(1)
 		if string.sub(Arg, 1, 7) == ".follow" then
 			local PlayerName = string.sub(Arg, 9)
 			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
+				CurrentlyWalkingToOwner = false
+				wait(1)
 				FS.Report("Attempting to follow "..AutoFilledName.."...",CLP)
 				SetOwner(AutoFilledName)
 			end		 
 		end
 
+	end,
+
+	[".return"] = function(Arg)
+		FS.Report("Returning to owner...",CLP)
+		SetOwner(Owner)	
 	end,
 
 
@@ -576,7 +586,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner)
+				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner, LastCommandIssuedby)
 			end	
 		end
 	end,
@@ -869,7 +879,7 @@ local CommandsTable = {
 					GreetingMessage = "🌙 Good Evening"
 				end
 
-				WalkTooTarget(AutoFilledName, true, GreetingMessage.." "..tostring(AutoFilledName)..". "..Greetings[math.random(1,#Greetings)])
+				WalkTooTarget(AutoFilledName, true, GreetingMessage.." "..tostring(AutoFilledName)..". "..Greetings[math.random(1,#Greetings)], LastCommandIssuedby)
 			end	
 		end
 	end,
@@ -882,9 +892,9 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				local Prompt = FS.Prompt("What Should I tell "..AutoFilledName.."?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("What Should I tell "..AutoFilledName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
-				WalkTooTarget(AutoFilledName, true, Prompt)
+				WalkTooTarget(AutoFilledName, true, Prompt, LastCommandIssuedby)
 			end	
 		end
 	end,
@@ -1210,6 +1220,43 @@ local CommandsTable = {
 		wait(0.3)
 	end,
 
+	[".addcmdownership"] = function(Arg)
+		if string.sub(Arg, 1, 16) == ".addcmdownership" then
+			local PlayerName = string.sub(Arg, 18)
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				print(AutoFilledName)
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				if table.find(CommandOwnershipList, AutoFilledName) then
+					FS.Report(AutoFilledName.." Already has command ownership!",CLP)
+				else
+					table.insert(CommandOwnershipList, AutoFilledName)
+					FS.Report(AutoFilledName.." has been added to the command ownership list.",CLP)
+				end
+			end
+		end
+	end,
+
+	[".removecmdownership"] = function(Arg)
+		if string.sub(Arg, 1, 19) == ".removecmdownership" then
+			local PlayerName = string.sub(Arg, 21)
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				print(AutoFilledName)
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				if table.find(CommandOwnershipList, AutoFilledName) then
+					FS.Report(AutoFilledName.." Does not have command ownership.",CLP)
+				else
+					table.remove(CommandOwnershipList, AutoFilledName)
+					FS.Report(AutoFilledName.." has been removed from the command ownership list.",CLP)
+				end
+			end
+		end
+	end,
+
+
 	[".trendingcrypto"] = function()
 		local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/search/trending")
 		local CoinsList = CoinInfo.coins
@@ -1228,9 +1275,9 @@ local CommandsTable = {
 
 		wait(0.3)
 
-		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",OwnerPlayerInstance)
+		local Question1 = FS.Prompt("Want me to find information about any of the other top 14 trending cryptos?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 		if table.find(ApprovalWords,string.lower(Question1)) then
-			local Question2 = FS.Prompt("Which Number? (1-14)",OwnerPlayerInstance)
+			local Question2 = FS.Prompt("Which Number? (1-14)",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 			if table.find(DisapprovalWords,string.lower(Question2)) then
 			else
 				local Coin1 = CoinsList[tonumber(Question2)].item
@@ -1289,7 +1336,7 @@ local CommandsTable = {
 					if RoliTable.playerPrivacyEnabled == true then
 						FS.Report("Player inventory scan failed, "..AutoFilledName.." has a private inventory",CLP)
 						wait(0.2)
-						local Prompt = FS.Prompt("Want to search their avatar for limiteds instead?",OwnerPlayerInstance)
+						local Prompt = FS.Prompt("Want to search their avatar for limiteds instead?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 						if table.find(ApprovalWords,string.lower(Prompt)) then
 							WearingLimiteds(AutoFilledName)
@@ -1309,7 +1356,7 @@ local CommandsTable = {
 						if #tostring(math.floor(totalValue)) >= 7 then
 							FS.Report(tostring(AutoFilledName) .."'s Total Value is : " .. FS.abbreviate(totalValue),CLP)
 							wait(0.1)
-							local Prompt = FS.Prompt("Do you want more information on this players assets?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Do you want more information on this players assets?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								LimitedInv(AutoFilledName)
@@ -1317,7 +1364,7 @@ local CommandsTable = {
 						else
 							FS.Report(tostring(AutoFilledName) .. "'s Total Value is : " .. FS.comma_value(totalValue),CLP)
 							wait(0.1)
-							local Prompt = FS.Prompt("Do you want more information on this players assets?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Do you want more information on this players assets?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								LimitedInv(AutoFilledName)
@@ -1378,7 +1425,7 @@ local CommandsTable = {
 							wait(0.2)
 							FS.Report("Sale Occured "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 							wait(0.8)
-							local Prompt = FS.Prompt("Want me to find more sales data for the item?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Want me to find more sales data for the item?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								local StatsTable = FS.Get_Request("https://rblx.trade/api/v2/catalog/"..itemshort.."/sales/statistics")
@@ -1394,7 +1441,7 @@ local CommandsTable = {
 							wait(0.2)
 							FS.Report("Sale Occured "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 							wait(0.8)
-							local Prompt = FS.Prompt("Want me to find more sales data for the item?",OwnerPlayerInstance)
+							local Prompt = FS.Prompt("Want me to find more sales data for the item?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 							if table.find(ApprovalWords,string.lower(Prompt)) then
 								local StatsTable = FS.Get_Request("https://rblx.trade/api/v2/catalog/"..itemshort.."/sales/statistics")
@@ -1482,7 +1529,7 @@ local CommandsTable = {
 			else
 				LimitedInv(AutoFilledName)
 				wait(0.5)
-				local Prompt = FS.Prompt("Want me to find more details on any of their items?",OwnerPlayerInstance)
+				local Prompt = FS.Prompt("Want me to find more details on any of their items?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
@@ -1525,6 +1572,103 @@ local CommandsTable = {
 			end
 		end	
 	end,
+
+	-- file system commands
+
+	[".folderstatus"] = function(Arg)
+			if isfolder("CharBot") == true then
+				FS.Report("CharBot workspace folder is valid.",CLP)
+			else
+				FS.Report("Unable to find CharBot workspace folder, creating one now.",CLP)
+				makefolder("CharBot")
+			end
+	end,
+	
+	[".listfiles"] = function(Arg)
+		local numberchatted = 0
+		for i,v in pairs(listfiles("CharBot")) do
+			numberchatted = numberchatted + 1
+			
+			if numberchatted > 3 then
+				print(tostring(v))
+			else
+				FS.Report(tostring(v),CLP)
+			end
+		end
+	end,
+	
+	[".readfile"] = function(Arg)
+		if string.sub(Arg, 1, 9) == ".readfile" then
+			local FileName = string.sub(Arg, 11)
+		
+			local success, response = pcall(function()
+				contents = readfile("Charbot/"..FileName)
+				print(contents)
+			end)
+			
+			if success then
+				print("file content collected, reporting..")
+				FS.Report("Charbot/"..FileName.." : "..contents,CLP)
+			end
+		end
+	end,
+	
+	[".writefile"] = function(Arg)
+		if string.sub(Arg, 1, 10) == ".writefile" then
+			local FileName = string.sub(Arg, 12)
+			
+			local Prompt = FS.Prompt("What should I write to the file?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+			
+			local success, response = pcall(function()
+				writefile("Charbot/"..FileName,Prompt)
+				print(FileName)
+				print(Prompt)
+			end)
+
+			if success then
+				print("if success true")
+				FS.Report("Charbot/"..FileName.." : Writen successfully",CLP)
+			end
+		end
+	end,
+	
+	[".deletefile"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".deletefile" then
+			local FileName = string.sub(Arg, 13)
+			
+			if isfile("CharBot/"..FileName) == true then
+				local Prompt = FS.Prompt("Are you sure you want to delete "..FileName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+				
+				if table.find(ApprovalWords, Prompt) then
+					delfile("CharBot/"..FileName)
+					wait(0.5)
+					FS.Report("Deleted ".."CharBot/"..FileName,CLP)
+				end
+			else
+				FS.Report("Couldn't find ".."CharBot/"..FileName,CLP)
+			end
+
+		end
+	end,
+	
+	[".exefile"] = function(Arg)
+		if string.sub(Arg, 1, 8) == ".exefile" then
+			local FileName = string.sub(Arg, 10)
+
+			if isfile("CharBot/"..FileName) == true then
+				local Prompt = FS.Prompt("Are you sure you want to execute "..FileName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+
+				if table.find(ApprovalWords, Prompt) then
+					loadfile("CharBot/"..FileName)
+					wait(0.5)
+					FS.Report("executing ".."CharBot/"..FileName,CLP)
+				end
+			else
+				FS.Report("Couldn't find ".."CharBot/"..FileName,CLP)
+			end
+
+		end
+	end,
 	
 	[".plrlockbrick"] = function(Arg)
 		if string.sub(Arg, 1, 13) == ".plrlockbrick" then
@@ -1549,13 +1693,14 @@ function PrintCommandList()
 	end
 end
 
-OwnerPlayerInstance.Chatted:Connect(function(msg)
+function ChatFromOwnerDetect(msg, player)
 	print("[➡️] "..msg)
 	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
+				LastCommandIssuedby = player
 				CMV(msg)
 			end
 		end
@@ -1565,12 +1710,30 @@ OwnerPlayerInstance.Chatted:Connect(function(msg)
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
+				LastCommandIssuedby = player
 				CMV(msg)
 			end
 		end
 	end
+end
+
+for _,p in ipairs(Players:GetPlayers()) do
+	p.Chatted:Connect(function(msg)
+		if table.find(CommandOwnershipList, tostring(p)) then
+			ChatFromOwnerDetect(msg, tostring(p))
+		end
+	end)
+end
+
+Players.PlayerAdded:Connect(function(p)
+	p.Chatted:Connect(function(msg)
+		if table.find(CommandOwnershipList, tostring(p)) then
+			ChatFromOwnerDetect(msg, tostring(p))
+		end
+	end)
 end)
 
+AutoJumpIfSat()
 CBD.CreateBotConfigTab()
 wait(0.1)
 CBD.BotConfigSettings(_G.BotConfig)
@@ -1581,7 +1744,12 @@ local TotalCmds = 0
 for i,v in pairs(CommandsTable) do
 	TotalCmds = TotalCmds + 1
 end
+local CustomTotalCmds = 0
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
+for i,v in pairs(_G.CustomCommands) do
+	CustomTotalCmds = CustomTotalCmds + 1
+end
+FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
+
 
 PingTest()
-AutoJumpIfSat()
