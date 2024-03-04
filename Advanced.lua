@@ -1760,7 +1760,7 @@ local CommandsTable = {
 					while true do
 						for i,v in pairs(parts) do
 							if keeporbiting == true then
-								FS.PathfindPart(v)
+								FS.PathfindPart(v, Character, Humanoid)
 								wait(0.1)
 							end
 							if keeporbiting == false then
