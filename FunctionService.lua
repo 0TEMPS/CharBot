@@ -64,6 +64,9 @@ local FS = {}
 function FS.SetChatPrefix(NewPrefix, PromptPrefix)
 	CurrentChatPrefix = NewPrefix
 	CurrentPromptPrefix = PromptPrefix
+	
+	print("CurrentChatPrefix Set to "..NewPrefix)
+	print("CurrentPromptPrefix Set to "..PromptPrefix)
 end
 
 function FS.CreatePlrLockBrick(playername, pos, cancollide, partname)
