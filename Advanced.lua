@@ -823,9 +823,8 @@ local CommandsTable = {
 		local gameservertable = FS.Get_Request("https://games.roblox.com/v1/games/"..tostring(game.PlaceId).."/servers/0?sortOrder=2&excludeFullGames=false&limit=100")
 		local gameinfotable = FS.Get_Request("https://games.roblox.com/v1/games?universeIds="..tostring(ClientInfo.ServerInfo.UniverseID))
 
-		FS.PrintTable(gameinfotable)
 
-		FS.Report(Place.." currently has "..#gameservertable.data.." active servers, there are currently "..gameinfotable[1].data.playing.." people playing globally.",CLP)
+		FS.Report(Place.." currently has "..#gameservertable.data.." active servers, there are currently "..gameinfotable.data[1].playing.." people playing globally.",CLP)
 		wait(0.1)
 		for i,v in pairs(gameservertable.data) do
 			if v.id == game.JobId then
