@@ -101,9 +101,8 @@ table.insert(CommandOwnershipList, CurrentOwner)
 
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
-FS.Report("FunctionService API Loaded.",CLO)
 FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix)
-print("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
+
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
 
@@ -1565,9 +1564,9 @@ local CommandsTable = {
 
 									local NumberOfOwners = #UAIDTable
 
-									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." on record.",CLP)
+									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
 									wait(0.3)
-									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[0].updatedAt))
+									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[1].updatedAt))
 									local unixdate = FS.unixtodate(timeobtained)
 									local secondssincesale = os.time() + -tonumber(timeobtained)
 									FS.Report("It looks like they obtained this item "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
