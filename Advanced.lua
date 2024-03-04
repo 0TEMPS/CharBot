@@ -101,7 +101,7 @@ table.insert(CommandOwnershipList, CurrentOwner)
 
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
-FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix)
+FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix, _G.BotConfig["Chat Settings"].PromptPrefix)
 
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
@@ -1546,9 +1546,6 @@ local CommandsTable = {
 						FS.Report("Request Failed, Reason : "..ItemTable["error"].code,CLP)
 
 					else
-
-						FS.PrintTable(ItemTable)
-						FS.PrintTable(ItemTable.inventory)
 						local TableNumber = 0
 						local TargetUAID
 						local AlreadyGotInfo = false
