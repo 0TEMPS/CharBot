@@ -277,7 +277,6 @@ end
 function FS.Prompt(Message, TargetChatter)
 	StatsTable.TotalChatMessages = StatsTable.TotalChatMessages + 1
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
-	print(CurrentPromptPrefix)
 	FS.Report(CurrentPromptPrefix..Message, true, true)
 	print(Message)
 
