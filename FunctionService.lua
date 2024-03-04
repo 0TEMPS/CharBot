@@ -543,6 +543,58 @@ function FS.ConvertCtoF(C)
 	return f
 end
 
+function FS.CreatePlrLockRing(playername, radius, cancollide, numberofparts)
+
+	local character = game:GetService("Players")[playername].Character
+	local hrp = character:WaitForChild("HumanoidRootPart")
+
+	local parts = {}
+	local partssofar = 1
+	for _ = 1, numberofparts do
+		local makepart = Instance.new("Part")
+		makepart.Name = tostring(partssofar)
+		makepart.Transparency = 0.8
+		partssofar = partssofar + 1
+
+		table.insert(parts, makepart)
+	end
+	local fullCircle = 2 * math.pi
+	for i, part in pairs(parts) do
+		part.Anchored = true
+		part.CanCollide = cancollide
+		part.Parent = workspace
+	end
+
+	local function getXAndZPositions(angle)
+		local x = math.cos(angle) * radius
+		local z = math.sin(angle) * radius
+		return x, z
+	end
+
+	running = game:GetService("RunService").Heartbeat:Connect(function()
+		Players.PlayerRemoving:Connect(function(player)
+			if tostring(playername) == player then
+				for i, part in pairs(parts) do
+					part:Destroy()
+				end
+				running:Disconnect()
+			end
+		end)
+		for i, part in pairs(parts) do
+			local angle = i * (fullCircle / #parts)
+			local x, z = getXAndZPositions(angle)
+
+			local position = (hrp.CFrame * CFrame.new(x, 0, z)).p
+			local lookAt = hrp.Position
+
+			part.CFrame = CFrame.new(position, lookAt)
+		end
+	end)
+
+	return parts
+
+end
+
 
 
 
