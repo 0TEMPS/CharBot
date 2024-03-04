@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.4 (Advanced)"
+local VersionNumber = "5.3.7 (Basic)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -99,10 +99,12 @@ local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
 
+local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
+
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.Report("FunctionService API Loaded.",CLO)
-FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix)
+
 print("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
@@ -277,6 +279,7 @@ function SetOwner(NewOwner)
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
 	if ownerchar then
 		if ownerchar:FindFirstChild("TargetPart") then
+			wait(1)
 			coroutine.wrap(function()
 				while true do
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
@@ -1766,10 +1769,8 @@ local CommandsTable = {
 							if keeporbiting == false then
 
 								for i,v in pairs(parts) do
-									v:Remove()
+									v:Destroy()
 								end
-								wait(0.1)
-								CurrentlyWalkingToOwner = false
 								wait(0.1)
 								break
 							end
@@ -1792,7 +1793,6 @@ local CommandsTable = {
 
 }
 
-
 function PrintCommandList()
 	for i,v in pairs(CommandsTable) do
 		print(i)
@@ -1803,16 +1803,6 @@ function ChatFromOwnerDetect(msg, player)
 	print("[➡️] "..msg)
 	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
-		if CommandIssued == false then
-			if string.find(msg, "%"..CMI) then
-				CommandIssued = true
-				LastCommandIssuedby = player
-				CMV(msg)
-			end
-		end
-	end
-
-	for CMI,CMV in pairs(_G.CustomCommands) do
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
@@ -1852,10 +1842,7 @@ for i,v in pairs(CommandsTable) do
 end
 local CustomTotalCmds = 0
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
-for i,v in pairs(_G.CustomCommands) do
-	CustomTotalCmds = CustomTotalCmds + 1
-end
-FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
+
 
 
 PingTest()
