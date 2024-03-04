@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-
+local FSVersion = "2.1 (Orbit)"
 
 
 local ChatServiceType
@@ -596,6 +596,6 @@ function FS.CreatePlrLockRing(playername, radius, cancollide, numberofparts)
 end
 
 
-
+FS.Report("FunctionService "..FSVersion,true)
 
 return FS	
