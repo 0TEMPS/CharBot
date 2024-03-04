@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.1 (Orbit)"
+local FSVersion = "2.2 (PromptUpdate)"
 
 
 local ChatServiceType
@@ -57,11 +57,13 @@ function WasFiltered(message)
 end
 
 local CurrentChatPrefix = ""
+local CurrentPromptPrefix = ""
 
 local FS = {}
 
-function FS.SetChatPrefix(NewPrefix)
+function FS.SetChatPrefix(NewPrefix, PromptPrefix)
 	CurrentChatPrefix = NewPrefix
+	CurrentPromptPrefix = PromptPrefix
 end
 
 function FS.CreatePlrLockBrick(playername, pos, cancollide, partname)
@@ -275,7 +277,7 @@ end
 function FS.Prompt(Message, TargetChatter)
 	StatsTable.TotalChatMessages = StatsTable.TotalChatMessages + 1
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
-	FS.Report(Message, true, true)
+	FS.Report(CurrentPromptPrefix..Message, true, true)
 	print(Message)
 
 	local ResponseContent = TargetChatter.Chatted:Wait(10)
