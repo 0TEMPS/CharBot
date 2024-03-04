@@ -688,7 +688,12 @@ local CommandsTable = {
 				local response = FS.Get_Request("https://avatar.roblox.com/v1/users/"..userid.."/outfits")
 
 
-				FS.Report(tostring(AutoFilledName).." Has "..tostring(response.total).." outfits in total.",CLP)
+				FS.Report(tostring(AutoFilledName).." Has "..tostring(response.total).." outfits in total, I was able to collect data on "..tostring(response.filteredCount).." of these outfits.",CLP)
+				wait(0.5)
+				local Info1 = response.data[math.random(1,tonumber(response.filteredCount))].name
+				local Info2 = response.data[math.random(1,tonumber(response.filteredCount))].name
+				local Info3 = response.data[math.random(1,tonumber(response.filteredCount))].name
+				FS.Report("Some names of their outfits are, "..Info1..", "..Info2.." and "..Info3)
 
 			end
 		end
@@ -1531,7 +1536,7 @@ local CommandsTable = {
 			else
 				LimitedInv(AutoFilledName)
 				wait(0.5)
-				local Prompt = FS.Prompt("Want me to find more details on any of their items?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+				local Prompt = FS.Prompt("Name one of their items and I'll find more details on it, Use a Disapproval Word to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
@@ -1545,9 +1550,6 @@ local CommandsTable = {
 						FS.Report("Request Failed, Reason : "..ItemTable["error"].code,CLP)
 
 					else
-
-						FS.PrintTable(ItemTable)
-						FS.PrintTable(ItemTable.inventory)
 						local TableNumber = 0
 						local TargetUAID
 						local AlreadyGotInfo = false
@@ -1563,9 +1565,12 @@ local CommandsTable = {
 
 									local NumberOfOwners = #UAIDTable
 
-									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." on record.")
+									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
 									wait(0.3)
-									FS.Report("It looks like they obtained the item on "..UAIDTable[0].instanceId.updatedAt)
+									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[1].updatedAt))
+									local unixdate = FS.unixtodate(timeobtained)
+									local secondssincesale = os.time() + -tonumber(timeobtained)
+									FS.Report("It looks like they obtained this item "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 								end
 							end
 						end
@@ -1727,7 +1732,7 @@ local CommandsTable = {
 		end
 	end,
 
-	[".stopbang"] = function()
+	[".unbang"] = function()
 		stopbang = true
 		CurrentlyWalkingToOwner = false
 	end,
@@ -1769,10 +1774,8 @@ local CommandsTable = {
 							if keeporbiting == false then
 
 								for i,v in pairs(parts) do
-									v:Remove()
+									v:Destroy()
 								end
-								wait(0.1)
-								CurrentlyWalkingToOwner = false
 								wait(0.1)
 								break
 							end
@@ -1794,6 +1797,7 @@ local CommandsTable = {
 
 
 }
+
 
 function PrintCommandList()
 	for i,v in pairs(CommandsTable) do
