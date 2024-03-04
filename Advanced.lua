@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.7 (Release)"
+local VersionNumber = "5.4 (Release)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -99,12 +99,10 @@ local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
 
-local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
-
 FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.Report("FunctionService API Loaded.",CLO)
-
+FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix)
 print("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
@@ -274,12 +272,12 @@ end
 
 function SetOwner(NewOwner)
 	CurrentlyWalkingToOwner = true
+	FS.Report("Attempting to follow "..tostring(NewOwner).." please wait...",CLP)
 
 	FS.CreatePlrLockBrick(tostring(NewOwner), _G.BotConfig["General Settings"].PlayerLockBrickVector, false, "TargetPart")
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
 	if ownerchar then
 		if ownerchar:FindFirstChild("TargetPart") then
-			wait(1)
 			coroutine.wrap(function()
 				while true do
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
@@ -1701,6 +1699,32 @@ local CommandsTable = {
 		end
 	end,
 
+	[".jumpattack"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".jumpattack" then
+			local PlayerArg = string.sub(Arg, 13)
+			CurrentlyWalkingToOwner = false
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if PlayerArg == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				stopbang = false
+				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
+				wait(1)
+				while true do
+
+					FS.PathfindPart(brick1, Character, Humanoid)
+					wait(1)
+					Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+					if stopbang == true then
+						brick1:Destroy()
+						break
+					end
+				end
+			end
+		end
+	end,
+
 	[".stopbang"] = function()
 		stopbang = true
 		CurrentlyWalkingToOwner = false
@@ -1715,11 +1739,13 @@ local CommandsTable = {
 		OwnerHRP = OwnerHRP.Character.HumanoidRootPart
 
 		Character.HumanoidRootPart.CFrame = OwnerHRP.CFrame
-		
+
 		wait(0.5)
-		
+
 		SetOwner(LastCommandIssuedby)
 	end,
+
+
 
 
 }
@@ -1734,6 +1760,16 @@ function ChatFromOwnerDetect(msg, player)
 	print("[➡️] "..msg)
 	local CommandIssued = false
 	for CMI,CMV in pairs(CommandsTable) do
+		if CommandIssued == false then
+			if string.find(msg, "%"..CMI) then
+				CommandIssued = true
+				LastCommandIssuedby = player
+				CMV(msg)
+			end
+		end
+	end
+
+	for CMI,CMV in pairs(_G.CustomCommands) do
 		if CommandIssued == false then
 			if string.find(msg, "%"..CMI) then
 				CommandIssued = true
@@ -1773,7 +1809,10 @@ for i,v in pairs(CommandsTable) do
 end
 local CustomTotalCmds = 0
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
-
+for i,v in pairs(_G.CustomCommands) do
+	CustomTotalCmds = CustomTotalCmds + 1
+end
+FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
 
 PingTest()
