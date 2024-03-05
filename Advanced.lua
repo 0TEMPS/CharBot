@@ -956,6 +956,10 @@ local CommandsTable = {
 		wait(0.2)
 		FS.Report("FunctionService has been referenced "..FS.abbreviate(StatsTable.TotalCommandsIssued).." times.",CLP)
 	end,
+	
+	[".sessiontime"] = function()
+		FS.Report("Current Session Runtime is : "..FS.convertToHMS(tick() - Log[Player]),CLP)
+	end,
 
 	[".planet"] = function(Arg)
 		if string.sub(Arg, 1, 7) == ".planet" then
@@ -1535,7 +1539,7 @@ local CommandsTable = {
 			else
 				LimitedInv(AutoFilledName)
 				wait(0.5)
-				local Prompt = FS.Prompt("Name one of their items and I'll find more details on it, Use a Disapproval Word to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+				local Prompt = FS.Prompt("if you name one of their items and I'll find more details on it, Use a Disapproval Word to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
@@ -1577,6 +1581,58 @@ local CommandsTable = {
 				end
 			end
 		end	
+	end,
+	
+	[".itemdetails"] = function(Arg)
+		if string.sub(Arg, 1, 12) == ".itemdetails" then
+			local PlayerArg = string.sub(Arg, 14)
+
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if AutoFilledName == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				local Prompt = FS.Prompt("if you name one of their items and I'll find more details on it, Use a Disapproval Word to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+
+				if table.find(DisapprovalWords,string.lower(Prompt)) then
+				else
+					local ItemID = FS.GetLimID(Prompt)
+					print(ItemID)
+					local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
+					print(UserID)
+					local ItemTable = FS.Get_Request("https://rblx.trade/api/v2/users/"..UserID.."/inventory?allowRefresh=false")
+
+					if ItemTable["error"] ~= nil then
+						FS.Report("Request Failed, Reason : "..ItemTable["error"].code,CLP)
+
+					else
+						local TableNumber = 0
+						local TargetUAID
+						local AlreadyGotInfo = false
+						for i,v in pairs(ItemTable.inventory) do
+							TableNumber = TableNumber + 1
+							if tostring(ItemTable.inventory[TableNumber].assetId) == tostring(ItemID) then
+								print("Found the UAID for "..AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." : "..ItemTable.inventory[TableNumber].uaid)
+								TargetUAID = ItemTable.inventory[TableNumber].uaid
+								if AlreadyGotInfo == false then
+									AlreadyGotInfo = true
+
+									local UAIDTable = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/ownership-history")
+
+									local NumberOfOwners = #UAIDTable
+
+									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
+									wait(0.3)
+									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[1].updatedAt))
+									local unixdate = FS.unixtodate(timeobtained)
+									local secondssincesale = os.time() + -tonumber(timeobtained)
+									FS.Report("It looks like they obtained this item "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
 	end,
 
 	-- file system commands
