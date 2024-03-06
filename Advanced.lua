@@ -1809,6 +1809,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
+				Variables.KeepRepeating = true
 				FS.Report("Attempting to repeat "..AutoFilledName.."'s chat messages...",CLP)
 				Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
 					if Variables.KeepRepeating == true then
@@ -1818,6 +1819,12 @@ local CommandsTable = {
 					end
 				end)
 			end
+		end
+	end,
+	
+	[".unrepeat"] = function()
+		if string.sub(Arg, 1, 9) == ".unrepeat" then
+			Variables.KeepRepeating = false
 		end
 	end,
 
