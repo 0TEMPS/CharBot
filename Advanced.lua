@@ -1865,7 +1865,7 @@ local CommandsTable = {
 
 				wait(1)
 
-				SetOwner(LastCommandIssuedby)
+				SetOwner(AutoFilledName)
 			end
 		end
 	end,
