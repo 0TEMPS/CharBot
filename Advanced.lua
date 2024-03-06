@@ -1922,7 +1922,7 @@ local CommandsTable = {
 		keeporbiting = false
 	end,
 
-	[".fart"] = function()
+	[".autotest"] = function()
 		while true do
 			local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
 			print(tostring(PlayerName))
@@ -1936,7 +1936,7 @@ local CommandsTable = {
 				GreetingMessage = "🌙 Good Evening"
 			end
 
-			local userid = Players:GetUserIdFromNameAsync(PlayerName)
+			local userid = Players:GetUserIdFromNameAsync(tostring(PlayerName))
 			local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
 			local Rating = math.random(1,10)
 			local hats = {
@@ -1944,6 +1944,7 @@ local CommandsTable = {
 			}
 			if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
 				FS.Report(tostring(PlayerName).." Would get a compliment, but they have no hats on.",CLP)
+				wait(3)
 			else
 				local hatnum = math.random(1,#hats["Hats"])
 				local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
