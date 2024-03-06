@@ -145,7 +145,7 @@ local Variables = {
 	debounce = false,
 	CurrentlyWalkingToOwner = nil,
 	NewOwner = game.Workspace:FindFirstChild(_G.BotConfig["General Settings"].Owner),
-	ChatSpyActive = false
+	ChatSpyActive = false,
 	KeepRepeating = false
 }
 
