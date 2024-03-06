@@ -1802,13 +1802,14 @@ local CommandsTable = {
 	end,
 
 	[".repeat"] = function(Arg)
-		if string.sub(Arg, 1, 11) == ".repeat" then
-			local PlayerArg = string.sub(Arg, 13)
+		if string.sub(Arg, 1, 7) == ".repeat" then
+			local PlayerArg = string.sub(Arg, 9)
 			CurrentlyWalkingToOwner = false
 			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
+				FS.Report("Attempting to repeat "..AutoFilledName.."'s chat messages...",CLP)
 				Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
 					if Variables.KeepRepeating == true then
 						FS.Report("["..AutoFilledName.."] "..message,CLP)
