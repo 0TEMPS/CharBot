@@ -146,6 +146,7 @@ local Variables = {
 	CurrentlyWalkingToOwner = nil,
 	NewOwner = game.Workspace:FindFirstChild(_G.BotConfig["General Settings"].Owner),
 	ChatSpyActive = false
+	KeepRepeating = false
 }
 
 local RolimonsItemTable = FS.RolimonsValueTable()
@@ -1800,28 +1801,21 @@ local CommandsTable = {
 		end
 	end,
 
-	[".jumpattack"] = function(Arg)
-		if string.sub(Arg, 1, 11) == ".jumpattack" then
+	[".repeat"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".repeat" then
 			local PlayerArg = string.sub(Arg, 13)
 			CurrentlyWalkingToOwner = false
 			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				stopbang = false
-				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
-				wait(1)
-				while true do
-
-					FS.PathfindPart(brick1, Character, Humanoid)
-					wait(1)
-					Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-
-					if stopbang == true then
-						brick1:Destroy()
-						break
+				Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
+					if Variables.KeepRepeating == true then
+						FS.Report("["..AutoFilledName.."] "..message,CLP)
+					elseif Variables.KeepRepeating == false then
+						return 
 					end
-				end
+				end)
 			end
 		end
 	end,
