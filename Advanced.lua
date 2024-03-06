@@ -889,6 +889,41 @@ local CommandsTable = {
 			end	
 		end
 	end,
+	
+	[".compliment"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".compliment" then
+			local PlayerName = string.sub(Arg, 13)
+
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				local GreetingMessage = nil
+
+				if RequestTime "%p" == "AM" then
+					GreetingMessage = "🌅 Good Morning"
+				elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") <= 6 then
+					GreetingMessage = "☀️ Good Afternoon"
+				elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") >= 7 then
+					GreetingMessage = "🌙 Good Evening"
+				end
+				
+				local userid = Players:GetUserIdFromNameAsync(AutoFilledName)
+				local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
+				local Rating = math.random(1,10)
+				local hats = {
+					["Hats"] = string.split(humdesc.HatAccessory,",")
+				}
+				if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
+					FS.Report(AutoFilledName.." Has no hats on, what am I going to compliment",CLP)
+				else
+					local hatnum = math.random(1,#hats["Hats"])
+					local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
+					WalkTooTarget(AutoFilledName, true, GreetingMessage.." "..tostring(AutoFilledName)..". I like your "..hatname, LastCommandIssuedby)
+				end
+			end	
+		end
+	end,
 
 	[".tell"] = function(Arg)
 		if string.sub(Arg, 1, 5) == ".tell" then
