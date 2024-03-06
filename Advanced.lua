@@ -1858,7 +1858,7 @@ local CommandsTable = {
 				keeporbiting = true
 				CurrentlyWalkingToOwner = false
 				CirclesDone = 0
-				coroutine.wrap(function()
+				local thing = coroutine.wrap(function()
 					while true do
 						for i,v in pairs(parts) do
 							if keeporbiting == true then
@@ -1872,11 +1872,17 @@ local CommandsTable = {
 								end
 								wait(0.1)
 								break
+
 							end
 							
 						end
-						CirclesDone = CirclesDone + 1
-						FS.Report(CirclesDone.." Laps ran around "..AutoFilledName,CLP)
+						if keeporbiting == true then
+							CirclesDone = CirclesDone + 1
+							FS.Report(CirclesDone.." Laps ran around "..AutoFilledName,CLP)
+						else
+							return
+
+						end
 						wait(0.1)
 					end
 				end)()
