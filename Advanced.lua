@@ -1846,7 +1846,7 @@ local CommandsTable = {
 		SetOwner(LastCommandIssuedby)
 	end,
 	
-	[".goto"] = function()
+	[".goto"] = function(Arg)
 		if string.sub(Arg, 1, 5) == ".goto" then
 			local PlayerArg = string.sub(Arg, 7)
 			CurrentlyWalkingToOwner = false
