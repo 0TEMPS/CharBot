@@ -304,12 +304,11 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay, playerwhoissuedc
 			local parttowalktoo = targetchar:WaitForChild("TestPFPart")
 			FS.PathfindPart(parttowalktoo, Character, Humanoid)
 			wait(2)		
+			FS.Report(MessageToSay,CLP)
+			parttowalktoo:Destroy()
 			if returntoowner == true then
-				FS.Report(MessageToSay,CLP)
 				wait(2)
 				SetOwner(playerwhoissuedcommand)
-				wait(1)
-				parttowalktoo:Destroy()
 			end
 		end
 	end
