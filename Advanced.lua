@@ -1823,9 +1823,7 @@ local CommandsTable = {
 	end,
 	
 	[".unrepeat"] = function()
-		if string.sub(Arg, 1, 9) == ".unrepeat" then
-			Variables.KeepRepeating = false
-		end
+		Variables.KeepRepeating = false
 	end,
 
 	[".unbang"] = function()
@@ -1859,7 +1857,7 @@ local CommandsTable = {
 
 				keeporbiting = true
 				CurrentlyWalkingToOwner = false
-
+				CirclesDone = 0
 				coroutine.wrap(function()
 					while true do
 						for i,v in pairs(parts) do
@@ -1875,7 +1873,10 @@ local CommandsTable = {
 								wait(0.1)
 								break
 							end
+							
 						end
+						CirclesDone = CirclesDone + 1
+						FS.Report(CirclesDone.." Laps ran around "..AutoFilledName,CLP)
 						wait(0.1)
 					end
 				end)()
