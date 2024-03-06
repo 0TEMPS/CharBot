@@ -1943,7 +1943,7 @@ local CommandsTable = {
 				["Hats"] = string.split(humdesc.HatAccessory,",")
 			}
 			if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
-				FS.Report(PlayerName.." Would get a compliment, but they have no hats on.",CLP)
+				FS.Report(tostring(PlayerName).." Would get a compliment, but they have no hats on.",CLP)
 			else
 				local hatnum = math.random(1,#hats["Hats"])
 				local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
