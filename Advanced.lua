@@ -890,7 +890,7 @@ local CommandsTable = {
 			end	
 		end
 	end,
-	
+
 	[".compliment"] = function(Arg)
 		if string.sub(Arg, 1, 11) == ".compliment" then
 			local PlayerName = string.sub(Arg, 13)
@@ -908,7 +908,7 @@ local CommandsTable = {
 				elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") >= 7 then
 					GreetingMessage = "🌙 Good Evening"
 				end
-				
+
 				local userid = Players:GetUserIdFromNameAsync(AutoFilledName)
 				local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
 				local Rating = math.random(1,10)
@@ -1821,7 +1821,7 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 	[".unrepeat"] = function()
 		Variables.KeepRepeating = false
 	end,
@@ -1845,7 +1845,7 @@ local CommandsTable = {
 
 		SetOwner(LastCommandIssuedby)
 	end,
-	
+
 	[".goto"] = function(Arg)
 		if string.sub(Arg, 1, 5) == ".goto" then
 			local PlayerArg = string.sub(Arg, 7)
@@ -1898,7 +1898,7 @@ local CommandsTable = {
 								break
 
 							end
-							
+
 						end
 						if keeporbiting == true then
 							CirclesDone = CirclesDone + 1
@@ -1921,6 +1921,39 @@ local CommandsTable = {
 	[".unorbit"] = function()
 		keeporbiting = false
 	end,
+
+	[".autotest"] = function()
+		while true do
+			local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
+
+			local GreetingMessage = nil
+
+			if RequestTime "%p" == "AM" then
+				GreetingMessage = "🌅 Good Morning"
+			elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") <= 6 then
+				GreetingMessage = "☀️ Good Afternoon"
+			elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") >= 7 then
+				GreetingMessage = "🌙 Good Evening"
+			end
+
+			local userid = Players:GetUserIdFromNameAsync(PlayerName)
+			local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
+			local Rating = math.random(1,10)
+			local hats = {
+				["Hats"] = string.split(humdesc.HatAccessory,",")
+			}
+			if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
+				FS.Report(PlayerName.." Would get a compliment, but they have no hats on.",CLP)
+			else
+				local hatnum = math.random(1,#hats["Hats"])
+				local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
+				WalkTooTarget(PlayerName, true, GreetingMessage.." "..tostring(PlayerName)..". I like your "..hatname, LastCommandIssuedby)
+			end
+			wait(3)
+			FS.Report("Alright whos next?",CLP)
+			wait(0.5)
+		end
+	end
 
 
 }
