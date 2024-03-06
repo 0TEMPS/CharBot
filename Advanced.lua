@@ -1841,9 +1841,33 @@ local CommandsTable = {
 
 		Character.HumanoidRootPart.CFrame = OwnerHRP.CFrame
 
-		wait(0.5)
+		wait(1)
 
 		SetOwner(LastCommandIssuedby)
+	end,
+	
+	[".goto"] = function()
+		if string.sub(Arg, 1, 5) == ".goto" then
+			local PlayerArg = string.sub(Arg, 7)
+			CurrentlyWalkingToOwner = false
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if AutoFilledName == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				stopbang = true
+
+				CurrentlyWalkingToOwner = false
+				wait(0.5)
+				local OwnerHRP = Players:FindFirstChild(tostring(AutoFilledName))
+				OwnerHRP = OwnerHRP.Character.HumanoidRootPart
+
+				Character.HumanoidRootPart.CFrame = OwnerHRP.CFrame
+
+				wait(1)
+
+				SetOwner(LastCommandIssuedby)
+			end
+		end
 	end,
 
 	[".orbit"] = function(Arg)
