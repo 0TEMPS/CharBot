@@ -1922,7 +1922,7 @@ local CommandsTable = {
 		keeporbiting = false
 	end,
 
-	[".autotest"] = function()
+	[".fart"] = function()
 		while true do
 			local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
 			print(tostring(PlayerName))
