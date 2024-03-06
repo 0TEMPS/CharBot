@@ -832,7 +832,7 @@ local CommandsTable = {
 				chckd = true
 			end
 		end
-		
+
 		if chckd == false then
 			FS.Report("Could not verify information on current server.",CLP)
 		end
@@ -956,7 +956,7 @@ local CommandsTable = {
 		wait(0.2)
 		FS.Report("FunctionService has been referenced "..FS.abbreviate(StatsTable.TotalCommandsIssued).." times.",CLP)
 	end,
-	
+
 	[".sessiontime"] = function()
 		FS.Report("Current Session Runtime is : "..FS.convertToHMS(tick() - Log[Player]),CLP)
 	end,
@@ -1257,7 +1257,11 @@ local CommandsTable = {
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
 				if table.find(CommandOwnershipList, AutoFilledName) then
-					table.remove(CommandOwnershipList, AutoFilledName)
+					for i,v in pairs(CommandOwnershipList) do
+						if v == AutoFilledName then
+							table.remove(CommandOwnershipList, i)
+						end
+					end
 					FS.Report(AutoFilledName.." has been removed from the command ownership list.",CLP)
 				else
 					FS.Report(AutoFilledName.." Does not have command ownership.",CLP)
@@ -1582,7 +1586,7 @@ local CommandsTable = {
 			end
 		end	
 	end,
-	
+
 	[".itemdetails"] = function(Arg)
 		if string.sub(Arg, 1, 12) == ".itemdetails" then
 			local PlayerArg = string.sub(Arg, 14)
