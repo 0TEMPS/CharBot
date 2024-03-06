@@ -1948,7 +1948,7 @@ local CommandsTable = {
 			else
 				local hatnum = math.random(1,#hats["Hats"])
 				local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
-				WalkTooTarget(PlayerName, true, GreetingMessage.." "..tostring(PlayerName)..". I like your "..hatname, LastCommandIssuedby)
+				WalkTooTarget(PlayerName, false, GreetingMessage.." "..tostring(PlayerName)..". I like your "..hatname, LastCommandIssuedby)
 			end
 			wait(3)
 			FS.Report("Alright whos next?",CLP)
