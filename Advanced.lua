@@ -1591,7 +1591,7 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				local Prompt = FS.Prompt("if you name one of their items and I'll find more details on it, Use a Disapproval Word to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+				local Prompt = FS.Prompt("Provide an item name for more details on it, use disapproval words to cancel.",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
