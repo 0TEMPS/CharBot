@@ -1925,7 +1925,7 @@ local CommandsTable = {
 	[".autotest"] = function()
 		while true do
 			local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
-
+			print(tostring(PlayerName))
 			local GreetingMessage = nil
 
 			if RequestTime "%p" == "AM" then
