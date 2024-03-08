@@ -490,8 +490,8 @@ function FS.GetCryptoName(Text)
 	local text = string.lower(Text)
 	local cointable = FS.CoinGeckoCoinTable()
 	for i,v in pairs(cointable) do
-		if string.lower(v[2]) == text or string.lower(v[1]) == text then
-			return v[1]
+		if string.lower(v.name) == text or string.lower(v.symbol) == text then
+			return v.id
 		end
 	end
 end
