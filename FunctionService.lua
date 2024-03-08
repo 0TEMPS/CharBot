@@ -46,8 +46,10 @@ local StatsTable = {
 }
 
 local RoliTableLoaded = false
+local CoinTableLoaded = false
 
 local RolimonsItemTable = nil
+local CoinTable = nil
 
 local abbreviations = {
 	["K"] = 4,
@@ -392,6 +394,17 @@ function FS.RolimonsValueTable()
 	end
 end
 
+function FS.CoinGeckoCoinTable()
+	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
+	if CoinTableLoaded == false then
+		CoinTable = FS.Get_Request("https://api.coingecko.com/api/v3/coins/list")
+		CoinTableLoaded = true
+		return(CoinTable)
+	else
+		return(CoinTable)
+	end
+end
+
 function FS.comma_value(amount)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	local k
@@ -468,6 +481,17 @@ function FS.GetLimID(Text)
 	for i,v in pairs(itemtable) do
 		if string.lower(v[2]) == text or string.lower(v[1]) == text then
 			return i
+		end
+	end
+end
+
+function FS.GetCryptoName(Text)
+	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
+	local text = string.lower(Text)
+	local cointable = FS.CoinGeckoCoinTable()
+	for i,v in pairs(cointable) do
+		if string.lower(v[2]) == text or string.lower(v[1]) == text then
+			return v[1]
 		end
 	end
 end
