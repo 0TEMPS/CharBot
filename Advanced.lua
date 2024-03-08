@@ -99,8 +99,6 @@ local RepeatList = {}
 local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
-
-FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
 FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix, _G.BotConfig["Chat Settings"].PromptPrefix)
 
@@ -152,6 +150,7 @@ local Variables = {
 
 local RolimonsItemTable = FS.RolimonsValueTable()
 FS.Report("Rolimons value table loaded, "..tostring(RolimonsItemTable.item_count).." items updated.", CLO)
+FS.CoinGeckoCoinTable()
 
 
 ClientInfo["ServerInfo"].ChatType = FS.FindChatType()
@@ -842,8 +841,8 @@ local CommandsTable = {
 	[".crypto"] = function(Arg)
 		if string.sub(Arg, 1, 7) == ".crypto" then
 			local CoinName = string.sub(Arg, 9)
-
-			local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/coins/"..CoinName)
+			local FilteredCoinName = FS.GetCryptoName(CoinName)
+			local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/coins/"..FilteredCoinName)
 
 			local CurrentPrice = CoinInfo.market_data.current_price[Currency]
 			local DailyHigh = CoinInfo.market_data.high_24h[Currency]
