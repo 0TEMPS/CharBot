@@ -12,6 +12,8 @@ local UGS = game:GetService("UserGameSettings")
 
 local FSVersion = "2.2 (PromptUpdate)"
 
+local Char = Players.LocalPlayer.Character
+local Humanoid = Char.Humanoid
 
 local ChatServiceType
 local function FindChatServiceType()
@@ -129,7 +131,7 @@ function FS.ReplaceUrlSpacing(text)
 end
 
 
-function FS.PathfindPart(PartInstance,Char,Humanoid)
+function FS.PathfindPart(PartInstance)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	local path = PFS:CreatePath()
 	path:ComputeAsync(Char.Head.Position, PartInstance.Position)
