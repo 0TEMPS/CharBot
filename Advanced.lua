@@ -94,6 +94,7 @@ local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 local CommandOwnershipList = {}
+local RepeatList = {}
 
 local LastCommandIssuedby = CurrentOwner
 
@@ -280,7 +281,7 @@ function SetOwner(NewOwner)
 			coroutine.wrap(function()
 				while true do
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
-					FS.PathfindPart(parttowalktoo, Character, Humanoid)
+					FS.PathfindPart(parttowalktoo)
 					wait(0.01)
 
 					if CurrentlyWalkingToOwner == false then
@@ -302,7 +303,7 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay, playerwhoissuedc
 			CurrentlyWalkingToOwner = false
 			wait(0.5)
 			local parttowalktoo = targetchar:WaitForChild("TestPFPart")
-			FS.PathfindPart(parttowalktoo, Character, Humanoid)
+			FS.PathfindPart(parttowalktoo)
 			wait(2)		
 			FS.Report(MessageToSay,CLP)
 			parttowalktoo:Destroy()
@@ -593,7 +594,7 @@ local CommandsTable = {
 		Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 	end,
 
-	[".autojump"] = function()
+	[".toggleautojump"] = function()
 		if AutoJumpWhenSitting == true then
 			AutoJumpWhenSitting = false
 		elseif AutoJumpWhenSitting == false then
@@ -1786,9 +1787,9 @@ local CommandsTable = {
 				SetOwner(AutoFilledName)
 				while true do
 
-					FS.PathfindPart(brick1, Character, Humanoid)
+					FS.PathfindPart(brick1)
 					wait(0.01)
-					FS.PathfindPart(brick2, Character, Humanoid)
+					FS.PathfindPart(brick2)
 
 					if stopbang == true then
 						brick1:Destroy()
@@ -1810,19 +1811,39 @@ local CommandsTable = {
 			else
 				Variables.KeepRepeating = true
 				FS.Report("Attempting to repeat "..AutoFilledName.."'s chat messages...",CLP)
-				Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
-					if Variables.KeepRepeating == true then
+				
+				RepeatConnection = Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
+					if table.find(RepeatList, AutoFilledName) then
 						FS.Report("["..AutoFilledName.."] "..message,CLP)
-					elseif Variables.KeepRepeating == false then
-						return 
+					else
+						RepeatConnection:Disconnect()
+						RepeatConnection = nil
 					end
 				end)
 			end
 		end
 	end,
 
-	[".unrepeat"] = function()
-		Variables.KeepRepeating = false
+	[".unrepeat"] = function(Arg)
+		if string.sub(Arg, 1, 9) == ".unrepeat" then
+			local PlayerName = string.sub(Arg, 11)
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				print(AutoFilledName)
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				if table.find(RepeatList, AutoFilledName) then
+					for i,v in pairs(RepeatList) do
+						if v == AutoFilledName then
+							table.remove(RepeatList, i)
+						end
+					end
+					FS.Report(AutoFilledName.." has been removed from the repeat list.",CLP)
+				else
+					FS.Report(AutoFilledName.." is not on the repeat list.",CLP)
+				end
+			end
+		end
 	end,
 
 	[".unbang"] = function()
@@ -1885,7 +1906,7 @@ local CommandsTable = {
 					while true do
 						for i,v in pairs(parts) do
 							if keeporbiting == true then
-								FS.PathfindPart(v, Character, Humanoid)
+								FS.PathfindPart(v)
 								wait(0.1)
 							end
 							if keeporbiting == false then
