@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (:Disconnect())"
+local FSVersion = "2.2 (CSGOSKINS)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
