@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (CSGOSKINS2dsdfsf)"
+local FSVersion = "2.2 (CSGOSKINS2)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -668,7 +668,7 @@ end
 
 function FS.formatQueryString(queryString)
 	-- Replace special characters with their percent-encoded equivalents
-	local formattedQueryString = urlencode(queryString)
+	local formattedQueryString = FS.urlencode(queryString)
 	return formattedQueryString
 end
 
