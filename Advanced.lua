@@ -2023,7 +2023,35 @@ local CommandsTable = {
 		local skinkey = CsGoTable[skinindex]
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
-		FS.Report("Your random skin is "..tostring(skinkey.name).." ("..tostring(wear.name)..") from `"..tostring(skinkey.collections[1].name).."`",CLP)
+		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from `"..tostring(skinkey.collections[1].name).."`",CLP)
+	end,
+	
+	[".searchskin"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".searchskin" then
+			local SkinArg = string.sub(Arg, 13)
+			local formattedQueryString = FS.formatQueryString(SkinArg)
+			
+			local Info = FS.Report("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
+			
+			if Info == nil or Info == "nil" then
+				FS.Report("csfloat returned nil, Ensure your using the proper market hash name, for example 'M4A4 | Poseidon (Factory New)'",CLP)
+				return
+			end
+			
+			local itemname = Info[1].item.market_hash_name
+			local price = FS.formatCurrency(Info[1].price / 100)
+			local seller = Info[1].seller.username
+			
+			local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
+			local unixdate = FS.unixtodate(timeobtained)
+			local secondssincesale = os.time() + -tonumber(timeobtained)
+			
+			FS.Report("The best deal I've found for a "..tostring(itemname).." is "..tostring(price).." being sold by "..tostring(seller),CLP)
+			wait(0.3)
+			FS.Report("This listing was posted at "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
+			wait(0.3)
+			FS.Report("Item description reads, '"..Info[1].description.."'",CLP)
+		end
 	end,
 
 }
