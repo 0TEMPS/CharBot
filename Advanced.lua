@@ -1635,9 +1635,8 @@ local CommandsTable = {
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
 					local ItemID = FS.GetLimID(Prompt)
-					print(ItemID)
+					
 					local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
-					print(UserID)
 					local ItemTable = FS.Get_Request("https://rblx.trade/api/v2/users/"..UserID.."/inventory?allowRefresh=false")
 
 					if ItemTable["error"] ~= nil then
@@ -1672,12 +1671,41 @@ local CommandsTable = {
 									wait(0.3)
 									local oldowner = tostring(UAIDTable[2].username)
 									
+									if oldowner == "nil" then
+										oldowner = "an unknown user"
+									end
+									
 									FS.Report("It looks like they obtained this item from "..oldowner.." on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 								end
 							end
 						end
 					end
 				end
+			end
+		end
+	end,
+	
+	[".sales"] = function(Arg)
+		if string.sub(Arg, 1, 6) == ".sales" then
+			local PlayerArg = string.sub(Arg, 8)
+
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if AutoFilledName == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				FS.Report("Attempting to find sales data for "..AutoFilledName, CLP)
+				local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
+				local SalesData = FS.Get_Request("https://rblx.trade/api/v2/catalog/users/"..UserID.."/sales?limit=100")
+				local SalesData = SalesData.data
+				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName.." the most recent one is..", CLP)
+				local itemId = SalesData[1].assetId
+				
+				FS.Report(AutoFilledName.." sold their "..MS:GetProductInfo(itemId).Name.." for "..SalesData[1].estimatedRobux.." robux")
+				local timeobtained = string.format('%d',FS.parse_json_date(SalesData[1].createdAt))
+				local unixdate = FS.unixtodate(timeobtained)
+				local secondssincesale = os.time() + -tonumber(timeobtained)
+				
+				FS.Report("It looks like they sold this item on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 			end
 		end
 	end,
