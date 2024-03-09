@@ -2014,8 +2014,17 @@ local CommandsTable = {
 			FS.Report("Alright whos next?",CLP)
 			wait(0.5)
 		end
-	end
-
+	end,
+	
+	[".randomskin"] = function()
+		local CsGoTable = FS.CsgoSkinTable()
+		
+		local skinindex = math.random(1,#CsGoTable)
+		local skinkey = CsGoTable[skinindex]
+		
+		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
+		FS.Report("Your random skin is"..skinkey.name.." ("..wear..") from `"..skinkey.collections[1].name.."`",CLP)
+	end,
 
 }
 
