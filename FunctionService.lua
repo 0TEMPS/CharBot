@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (CSGOSKINS)"
+local FSVersion = "2.2 (CSGOSKINS2)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -643,6 +643,43 @@ function FS.CreatePlrLockRing(playername, radius, cancollide, numberofparts)
 	return parts
 
 end
+
+function FS.urlencode(str)
+	-- URL encode special characters
+	str = string.gsub(str, "([^%w ])", function(c)
+		return string.format("%%%02X", string.byte(c))
+	end)
+	-- Replace spaces with '+'
+	str = string.gsub(str, " ", "+")
+	return str
+end
+
+function FS.formatQueryString(queryString)
+	-- Replace special characters with their percent-encoded equivalents
+	local formattedQueryString = FS.urlencode(queryString)
+	return formattedQueryString
+end
+
+function FS.formatCurrency(amount)
+		-- Round the amount to two decimal places
+		amount = math.floor(amount * 100 + 0.5) / 100
+
+		-- Separate dollars and cents
+		local dollars = math.floor(amount)
+		local cents = math.floor((amount - dollars) * 100)
+
+		-- Format dollars with commas
+		local formattedDollars = tostring(dollars):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+
+		-- Format cents
+		local formattedCents = string.format("%02d", cents)
+
+		-- Concatenate dollars and cents with "$"
+		local formattedAmount = string.format("$%s.%s", formattedDollars, formattedCents)
+
+		return formattedAmount
+	end
+
 
 
 FS.Report("FunctionService "..FSVersion,true)
