@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (CSGOSKINS2)"
+local FSVersion = "2.2 (CSGOSKINS2SpacingFix)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -202,6 +202,18 @@ function FS.Get_Request(URL)
 	local Getrequest
 	Getrequest = request({
 		Url = URL2,
+		Method = "GET",
+	})
+	local Decode = HTTP:JSONDecode(Getrequest.Body)
+	return Decode
+end
+
+function FS.Get_RequestNoSpace(URL)
+	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
+	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
+	local Getrequest
+	Getrequest = request({
+		Url = URL,
 		Method = "GET",
 	})
 	local Decode = HTTP:JSONDecode(Getrequest.Body)
