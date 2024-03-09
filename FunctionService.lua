@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (CSGOSKINS2SpacingFix)"
+local FSVersion = "2.2 (CSGOSKINS2dsdfsf)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -667,16 +667,8 @@ function FS.urlencode(str)
 end
 
 function FS.formatQueryString(queryString)
-	-- Split the query string into components
-	local components = {}
-	for component in string.gmatch(queryString, "[^|]+") do
-		table.insert(components, component)
-	end
-
-	-- URL encode each component and join them with '|'
-	local formattedQueryString = table.concat(components, " | ")
-	formattedQueryString = FS.urlencode(formattedQueryString)
-
+	-- Replace special characters with their percent-encoded equivalents
+	local formattedQueryString = urlencode(queryString)
 	return formattedQueryString
 end
 
