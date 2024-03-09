@@ -2034,8 +2034,14 @@ local CommandsTable = {
 			local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
 			
 			if Info == nil or Info == "nil" or Info[1] == nil then
-				FS.Report("csfloat returned nil, Ensure your using the proper market hash name, for example 'M4A4 | Poseidon (Factory New)'",CLP)
-				return
+				local formattedQueryString2 = FS.formatQueryString(SkinArg.." (Factory New)")
+				local Info2 = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString2)
+				if Info2 == nil or Info2 == "nil" or Info2[1] == nil then
+					FS.Report("csfloat returned nil, Ensure your using the proper market hash name, for example 'M4A4 | Poseidon (Factory New)'",CLP)
+					return
+				else
+					Info = Info2
+				end
 			end
 			
 			local itemname = Info[1].item.market_hash_name
@@ -2050,7 +2056,7 @@ local CommandsTable = {
 			wait(0.3)
 			FS.Report("This listing was posted at "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 			wait(0.3)
-			FS.Report("Item description reads, '"..Info[1].description.."'",CLP)
+			FS.Report("Item description reads, '"..tostring(Info[1].description).."'",CLP)
 		end
 	end,
 
