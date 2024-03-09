@@ -349,8 +349,8 @@ function FS.AutoFillPlayer(String)
 	end
 	
 	if player == "" or player == " " then
-		returnstring = "No username argument provided."
-		return returnstring
+		FS.Report("No username argument provided",true)
+		return "Invalid username."
 	end
 	
 	if string.find(player, '%*') then
