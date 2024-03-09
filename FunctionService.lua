@@ -47,9 +47,11 @@ local StatsTable = {
 
 local RoliTableLoaded = false
 local CoinTableLoaded = false
+local SkinTableLoaded = false
 
 local RolimonsItemTable = nil
 local CoinTable = nil
+local SkinTable = nil
 
 local abbreviations = {
 	["K"] = 4,
@@ -407,6 +409,17 @@ function FS.CoinGeckoCoinTable()
 		return(CoinTable)
 	else
 		return(CoinTable)
+	end
+end
+
+function FS.CsgoSkinTable()
+	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
+	if SkinTableLoaded == false then
+		SkinTable = FS.Get_Request("https://bymykel.github.io/CSGO-API/api/en/skins.json")
+		SkinTableLoaded = true
+		return(SkinTable)
+	else
+		return(SkinTable)
 	end
 end
 
