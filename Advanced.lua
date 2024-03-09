@@ -1792,7 +1792,7 @@ local CommandsTable = {
 
 					if stopbang == true then
 						brick1:Destroy()
-						brick2:Destroy()
+						brick2:Destroy() 
 						break
 					end
 				end
@@ -1810,7 +1810,7 @@ local CommandsTable = {
 			else
 				Variables.KeepRepeating = true
 				FS.Report("Attempting to repeat "..AutoFilledName.."'s chat messages...",CLP)
-				
+				table.insert(RepeatList, AutoFilledName)
 				RepeatConnection = Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
 					if table.find(RepeatList, AutoFilledName) then
 						FS.Report("["..AutoFilledName.."] "..message,CLP)
