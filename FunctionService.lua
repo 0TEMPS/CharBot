@@ -655,8 +655,16 @@ function FS.urlencode(str)
 end
 
 function FS.formatQueryString(queryString)
-	-- Replace special characters with their percent-encoded equivalents
-	local formattedQueryString = FS.urlencode(queryString)
+	-- Split the query string into components
+	local components = {}
+	for component in string.gmatch(queryString, "[^|]+") do
+		table.insert(components, component)
+	end
+
+	-- URL encode each component and join them with '|'
+	local formattedQueryString = table.concat(components, " | ")
+	formattedQueryString = FS.urlencode(formattedQueryString)
+
 	return formattedQueryString
 end
 
