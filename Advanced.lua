@@ -1697,10 +1697,15 @@ local CommandsTable = {
 				local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
 				local SalesData = FS.Get_Request("https://rblx.trade/api/v2/catalog/users/"..UserID.."/sales?limit=100")
 				local SalesData = SalesData.data
-				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName.." the most recent one is..", CLP)
+				
+				if #SalesData == 0 then
+					FS.Report("Unable to find any sales data for "..AutoFilledName,CLP)
+					return
+				end
+				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName..", the most recent one is..", CLP)
 				local itemId = SalesData[1].assetId
 				
-				FS.Report(AutoFilledName.." sold their "..MS:GetProductInfo(itemId).Name.." for "..SalesData[1].estimatedRobux.." robux")
+				FS.Report(AutoFilledName.." sold their "..MS:GetProductInfo(itemId).Name.." for "..FS.abbreviate(SalesData[1].estimatedRobux).." robux",CLP)
 				local timeobtained = string.format('%d',FS.parse_json_date(SalesData[1].createdAt))
 				local unixdate = FS.unixtodate(timeobtained)
 				local secondssincesale = os.time() + -tonumber(timeobtained)
