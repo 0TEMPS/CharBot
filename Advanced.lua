@@ -2031,7 +2031,7 @@ local CommandsTable = {
 			local SkinArg = string.sub(Arg, 13)
 			local formattedQueryString = FS.formatQueryString(SkinArg)
 			
-			local Info = FS.Report("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
+			local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
 			
 			if Info == nil or Info == "nil" then
 				FS.Report("csfloat returned nil, Ensure your using the proper market hash name, for example 'M4A4 | Poseidon (Factory New)'",CLP)
