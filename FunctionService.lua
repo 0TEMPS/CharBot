@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (PromptUpdate)"
+local FSVersion = "2.2 (:Disconnect())"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -348,6 +348,11 @@ function FS.AutoFillPlayer(String)
 		return tostring(game.Players:GetPlayers()[num])
 	end
 	
+	if player == "" or player == " " then
+		returnstring = "No username argument provided."
+		return returnstring
+	end
+	
 	if string.find(player, '%*') then
 		
 		return string.gsub(player, '%*', '')
@@ -356,7 +361,7 @@ function FS.AutoFillPlayer(String)
 	local returnstring = FS.FindUser(player)
 	if info == "attempt to call a nil value" then
 		returnstring = "Invalid username."
-		warn("[⚠️] FunctionService.AutoFillPlayer Error : "..info.." ("..returnstring..")")
+		warn("[⚠️] FS.AutoFillPlayer Error : "..info.." ("..returnstring..")")
 	end
 
 	return returnstring
