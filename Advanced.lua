@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.4 (Advanced)"
+local VersionNumber = "5.5 (Advanced)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -1702,6 +1702,7 @@ local CommandsTable = {
 					FS.Report("Unable to find any sales data for "..AutoFilledName,CLP)
 					return
 				end
+				wait(1)
 				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName..", the most recent one is..", CLP)
 				local itemId = SalesData[1].assetId
 				
@@ -2023,7 +2024,24 @@ local CommandsTable = {
 		local skinkey = CsGoTable[skinindex]
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
-		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from `"..tostring(skinkey.collections[1].name).."`",CLP)
+		local formattedQueryString = FS.formatQueryString(tostring(skinkey.name).." ("..tostring(wear.name))
+
+		local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
+		
+		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
+		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from '"..tostring(skinkey.collections[1].name).."'",CLP)
+		
+		local itemname = Info[1].item.market_hash_name
+		local price = FS.formatCurrency(Info[1].price / 100)
+		local seller = Info[1].seller.username
+		local rarity = Info[1].item.rarity_name
+		local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
+		local unixdate = FS.unixtodate(timeobtained)
+		local secondssincesale = os.time() + -tonumber(timeobtained)
+
+		FS.Report("It's worth about "..tostring(price).." and has a rarity of "..tostring(rarity),CLP)
+
+		
 	end,
 	
 	[".searchskin"] = function(Arg)
@@ -2056,7 +2074,7 @@ local CommandsTable = {
 			wait(0.3)
 			FS.Report("This listing was posted at "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 			wait(0.3)
-			FS.Report("Item description reads, '"..tostring(Info[1].description).."'",CLP)
+			FS.Report("'"..tostring(Info[1].description).."'",CLP)
 		end
 	end,
 
