@@ -1656,15 +1656,23 @@ local CommandsTable = {
 									AlreadyGotInfo = true
 
 									local UAIDTable = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/ownership-history")
-
+									local SerialIfCan = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/info")
+									
 									local NumberOfOwners = #UAIDTable
-
+									
 									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
 									wait(0.3)
+									if SerialIfCan.serialNumber == nil or SerialIfCan.serialNumber == "nil" or SerialIfCan.serialNumber == "" then
+									else
+										FS.Report("The Serial for this item is #"..SerialIfCan.serialNumber,CLP)
+									end
 									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[1].updatedAt))
 									local unixdate = FS.unixtodate(timeobtained)
 									local secondssincesale = os.time() + -tonumber(timeobtained)
-									FS.Report("It looks like they obtained this item "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
+									wait(0.3)
+									local oldowner = tostring(UAIDTable[2].username)
+									
+									FS.Report("It looks like they obtained this item from "..oldowner.." on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 								end
 							end
 						end
