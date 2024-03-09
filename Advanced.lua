@@ -2023,7 +2023,7 @@ local CommandsTable = {
 		local skinkey = CsGoTable[skinindex]
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
-		FS.Report("Your random skin is"..skinkey.name.." ("..wear..") from `"..skinkey.collections[1].name.."`",CLP)
+		FS.Report("Your random skin is"..skinkey.name.." ("..wear.name..") from `"..skinkey.collections[1].name.."`",CLP)
 	end,
 
 }
