@@ -135,6 +135,10 @@ function FS.ReplaceUrlSpacing(text)
 	end
 end
 
+function FS.CancelPathfinding()
+	CancelPathFind = true
+end
+
 
 function FS.PathfindPart(PartInstance)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
