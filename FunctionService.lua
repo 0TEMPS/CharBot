@@ -145,7 +145,10 @@ function FS.PathfindPart(PartInstance)
 	local path = PFS:CreatePath()
 	path:ComputeAsync(Char.Head.Position, PartInstance.Position)
 	local waypoints = path:GetWaypoints()
-
+	if CancelPathFind == true then
+		CancelPathFind = false
+		return 
+	end
 	for i, waypoint in pairs(waypoints) do
 		if CancelPathFind == true then
 			CancelPathFind = false
@@ -154,7 +157,10 @@ function FS.PathfindPart(PartInstance)
 		Humanoid:MoveTo(waypoint.Position)
 		Humanoid.MoveToFinished:Wait(2)
 	end
-
+	if CancelPathFind == true then
+		CancelPathFind = false
+		return 
+	end
 	Humanoid:MoveTo(PartInstance.Position)
 	Humanoid.MoveToFinished:Wait(2)
 end
