@@ -2084,6 +2084,9 @@ local CommandsTable = {
 	
 	[".cancelpathfinding"] = function()
 		FS.CancelPathfinding()
+		CurrentlyWalkingToOwner = false
+		keeporbiting = false
+		stopbang = true
 	end,
 
 }
