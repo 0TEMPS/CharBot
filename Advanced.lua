@@ -2024,13 +2024,15 @@ local CommandsTable = {
 		local skinkey = CsGoTable[skinindex]
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
-		local formattedQueryString = FS.formatQueryString(tostring(skinkey.name).." ("..tostring(wear.name))
+		local formattedQueryString = FS.formatQueryString(tostring(skinkey.name).." ("..tostring(wear.name..")"))
 
 		local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
 		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from '"..tostring(skinkey.collections[1].name).."'",CLP)
-		
+		if Info == nil or Info == "nil" or Info[1] == nil then
+			return
+		end
 		local itemname = Info[1].item.market_hash_name
 		local price = FS.formatCurrency(Info[1].price / 100)
 		local seller = Info[1].seller.username
@@ -2147,3 +2149,4 @@ FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
 
 PingTest()
+
