@@ -37,6 +37,7 @@ if game:FindFirstChild("TextChatService") then
 	end
 end
 
+local CancelPathFind = false
 local FSReport = {}
 
 local StatsTable = {
@@ -142,6 +143,10 @@ function FS.PathfindPart(PartInstance)
 	local waypoints = path:GetWaypoints()
 
 	for i, waypoint in pairs(waypoints) do
+		if CancelPathFind == true then
+			CancelPathFind = false
+			return 
+		end
 		Humanoid:MoveTo(waypoint.Position)
 		Humanoid.MoveToFinished:Wait(2)
 	end
