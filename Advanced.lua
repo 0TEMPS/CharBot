@@ -2029,18 +2029,20 @@ local CommandsTable = {
 		local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
 		
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
+		
 		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from '"..tostring(skinkey.collections[1].name).."'",CLP)
+		
 		if Info == nil or Info == "nil" or Info[1] == nil then
 			return
 		end
 		local itemname = Info[1].item.market_hash_name
 		local price = FS.formatCurrency(Info[1].price / 100)
-		local seller = Info[1].seller.username
+		local seller = Info[1].seller.username.randomskin
 		local rarity = Info[1].item.rarity_name
 		local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
 		local unixdate = FS.unixtodate(timeobtained)
 		local secondssincesale = os.time() + -tonumber(timeobtained)
-
+		wait(1)
 		FS.Report("It's worth about "..tostring(price).." and has a rarity of "..tostring(rarity),CLP)
 
 		
@@ -2078,6 +2080,10 @@ local CommandsTable = {
 			wait(0.3)
 			FS.Report("'"..tostring(Info[1].description).."'",CLP)
 		end
+	end,
+	
+	[".cancelpathfinding"] = function()
+		FS.CancelPathfinding()
 	end,
 
 }
