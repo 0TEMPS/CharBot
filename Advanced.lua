@@ -100,7 +100,7 @@ local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
 wait(0.2)
-FS.SetChatPrefix(_G.BotConfig["Chat Settings"].ChatPrefix, "[❓] ")
+FS.SetChatPrefix("[💬] ", "[❓] ")
 
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
