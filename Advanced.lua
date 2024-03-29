@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.3.7 (Basic)"
+local VersionNumber = "5.6 (Advanced)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -68,13 +68,12 @@ end
 local Log = {}
 Log[ClientInfo["BotInfo"].BotPath] = tick()
 
-local FileName = "ServerLogs.txt"
+local FileName = "LogTYest.txt"
 local FolderName = "CharBot"
 
 local UserIDTable = {}
 local ChatLog = {}
 local ChatConnections = {}
-
 makefolder(FolderName)
 
 local Player = ClientInfo["BotInfo"].BotPath
@@ -101,18 +100,14 @@ local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 local CommandOwnershipList = {}
+local RepeatList = {}
 
 local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
-
-local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
-
-FS.Report("Starting "..VersionName.." V"..VersionNumber,CLO)
 wait(0.2)
-FS.Report("FunctionService API Loaded.",CLO)
+FS.SetChatPrefix("[💬] ", "[❓] ")
 
-print("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
 ClientInfo["ServerInfo"].UniverseID = UniverseRequest.universeId
 
@@ -155,11 +150,13 @@ local Variables = {
 	debounce = false,
 	CurrentlyWalkingToOwner = nil,
 	NewOwner = game.Workspace:FindFirstChild(_G.BotConfig["General Settings"].Owner),
-	ChatSpyActive = false
+	ChatSpyActive = false,
+	KeepRepeating = false
 }
 
 local RolimonsItemTable = FS.RolimonsValueTable()
 FS.Report("Rolimons value table loaded, "..tostring(RolimonsItemTable.item_count).." items updated.", CLO)
+FS.CoinGeckoCoinTable()
 
 
 ClientInfo["ServerInfo"].ChatType = FS.FindChatType()
@@ -286,9 +283,8 @@ function SetOwner(NewOwner)
 	local ownerchar = game.Workspace:FindFirstChild(tostring(NewOwner))
 	if ownerchar then
 		if ownerchar:FindFirstChild("TargetPart") then
-			wait(1)
 			coroutine.wrap(function()
-				while true do
+				while CurrentlyWalkingToOwner do
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
 					FS.PathfindPart(parttowalktoo)
 					wait(0.01)
@@ -312,14 +308,13 @@ function WalkTooTarget(TargetPart, returntoowner, MessageToSay, playerwhoissuedc
 			CurrentlyWalkingToOwner = false
 			wait(0.5)
 			local parttowalktoo = targetchar:WaitForChild("TestPFPart")
-			FS.PathfindPart(parttowalktoo, Character, Humanoid)
+			FS.PathfindPart(parttowalktoo)
 			wait(2)		
+			FS.Report(MessageToSay,CLP)
+			parttowalktoo:Destroy()
 			if returntoowner == true then
-				FS.Report(MessageToSay,CLP)
 				wait(2)
 				SetOwner(playerwhoissuedcommand)
-				wait(1)
-				parttowalktoo:Destroy()
 			end
 		end
 	end
@@ -483,6 +478,7 @@ local OwnerCharacter = OwnerPlayerInstance.Character
 
 FS.CreateHightLight(tostring(_G.BotConfig["General Settings"]["Owner"]), _G.BotConfig["General Settings"].OwnerHighlight)
 
+
 function IsUserIDInTable(userID)
 	return UserIDTable[userID] ~= nil
 end
@@ -640,6 +636,7 @@ function LogChatMessages(player, action)
 		print("Error: Invalid action specified. Action must be 'Joined' or 'Leaving'.")
 	end
 end
+
 
 local CommandsTable = {
 	[".act"] = function()
@@ -1009,8 +1006,8 @@ local CommandsTable = {
 	[".crypto"] = function(Arg)
 		if string.sub(Arg, 1, 7) == ".crypto" then
 			local CoinName = string.sub(Arg, 9)
-
-			local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/coins/"..CoinName)
+			local FilteredCoinName = FS.GetCryptoName(CoinName)
+			local CoinInfo = FS.Get_Request("https://api.coingecko.com/api/v3/coins/"..FilteredCoinName)
 
 			local CurrentPrice = CoinInfo.market_data.current_price[Currency]
 			local DailyHigh = CoinInfo.market_data.high_24h[Currency]
@@ -1803,9 +1800,8 @@ local CommandsTable = {
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
 					local ItemID = FS.GetLimID(Prompt)
-					print(ItemID)
+
 					local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
-					print(UserID)
 					local ItemTable = FS.Get_Request("https://rblx.trade/api/v2/users/"..UserID.."/inventory?allowRefresh=false")
 
 					if ItemTable["error"] ~= nil then
@@ -1824,20 +1820,63 @@ local CommandsTable = {
 									AlreadyGotInfo = true
 
 									local UAIDTable = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/ownership-history")
+									local SerialIfCan = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/info")
 
 									local NumberOfOwners = #UAIDTable
 
 									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
 									wait(0.3)
+									if SerialIfCan.serialNumber == nil or SerialIfCan.serialNumber == "nil" or SerialIfCan.serialNumber == "" then
+									else
+										FS.Report("The Serial for this item is #"..SerialIfCan.serialNumber,CLP)
+									end
 									local timeobtained = string.format('%d',FS.parse_json_date(UAIDTable[1].updatedAt))
 									local unixdate = FS.unixtodate(timeobtained)
 									local secondssincesale = os.time() + -tonumber(timeobtained)
-									FS.Report("It looks like they obtained this item "..FS.convertToHMS(secondssincesale).." ago on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
+									wait(0.3)
+									local oldowner = tostring(UAIDTable[2].username)
+
+									if oldowner == "nil" then
+										oldowner = "an unknown user"
+									end
+
+									FS.Report("It looks like they obtained this item from "..oldowner.." on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 								end
 							end
 						end
 					end
 				end
+			end
+		end
+	end,
+
+	[".sales"] = function(Arg)
+		if string.sub(Arg, 1, 6) == ".sales" then
+			local PlayerArg = string.sub(Arg, 8)
+
+			local AutoFilledName = FS.AutoFillPlayer(PlayerArg)
+			if AutoFilledName == "Invalid username." then
+				FS.Report("Invalid username.",CLP)
+			else
+				FS.Report("Attempting to find sales data for "..AutoFilledName, CLP)
+				local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
+				local SalesData = FS.Get_Request("https://rblx.trade/api/v2/catalog/users/"..UserID.."/sales?limit=100")
+				local SalesData = SalesData.data
+
+				if #SalesData == 0 then
+					FS.Report("Unable to find any sales data for "..AutoFilledName,CLP)
+					return
+				end
+				wait(1)
+				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName..", the most recent one is..", CLP)
+				local itemId = SalesData[1].assetId
+
+				FS.Report(AutoFilledName.." sold their "..MS:GetProductInfo(itemId).Name.." for "..FS.abbreviate(SalesData[1].estimatedRobux).." robux",CLP)
+				local timeobtained = string.format('%d',FS.parse_json_date(SalesData[1].createdAt))
+				local unixdate = FS.unixtodate(timeobtained)
+				local secondssincesale = os.time() + -tonumber(timeobtained)
+
+				FS.Report("It looks like they sold this item on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 			end
 		end
 	end,
@@ -1960,7 +1999,7 @@ local CommandsTable = {
 
 					if stopbang == true then
 						brick1:Destroy()
-						brick2:Destroy()
+						brick2:Destroy() 
 						break
 					end
 				end
@@ -1978,7 +2017,7 @@ local CommandsTable = {
 			else
 				Variables.KeepRepeating = true
 				FS.Report("Attempting to repeat "..AutoFilledName.."'s chat messages...",CLP)
-
+				table.insert(RepeatList, AutoFilledName)
 				RepeatConnection = Players:FindFirstChild(AutoFilledName).Chatted:Connect(function(message)
 					if table.find(RepeatList, AutoFilledName) then
 						FS.Report("["..AutoFilledName.."] "..message,CLP)
@@ -2141,8 +2180,84 @@ local CommandsTable = {
 			FS.Report("Alright whos next?",CLP)
 			wait(0.5)
 		end
-	end
+	end,
 
+	[".randomskin"] = function()
+		local CsGoTable = FS.CsgoSkinTable()
+
+		local skinindex = math.random(1,#CsGoTable)
+		local skinkey = CsGoTable[skinindex]
+
+		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
+		local formattedQueryString = FS.formatQueryString(tostring(skinkey.name).." ("..tostring(wear.name..")"))
+
+		local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
+
+		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
+
+		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from '"..tostring(skinkey.collections[1].name).."'",CLP)
+
+		if Info == nil or Info == "nil" or Info[1] == nil then
+			return
+		end
+		local itemname = Info[1].item.market_hash_name
+		local price = FS.formatCurrency(Info[1].price / 100)
+		local seller = Info[1].seller.username.randomskin
+		local rarity = Info[1].item.rarity_name
+		local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
+		local unixdate = FS.unixtodate(timeobtained)
+		local secondssincesale = os.time() + -tonumber(timeobtained)
+		wait(1)
+		FS.Report("It's worth about "..tostring(price).." and has a rarity of "..tostring(rarity),CLP)
+
+
+	end,
+
+	[".searchskin"] = function(Arg)
+		if string.sub(Arg, 1, 11) == ".searchskin" then
+			local SkinArg = string.sub(Arg, 13)
+			local formattedQueryString = FS.formatQueryString(SkinArg)
+
+			local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
+
+			if Info == nil or Info == "nil" or Info[1] == nil then
+				local formattedQueryString2 = FS.formatQueryString(SkinArg.." (Factory New)")
+				local Info2 = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString2)
+				if Info2 == nil or Info2 == "nil" or Info2[1] == nil then
+					FS.Report("csfloat returned nil, Ensure your using the proper market hash name, for example 'M4A4 | Poseidon (Factory New)'",CLP)
+					return
+				else
+					Info = Info2
+				end
+			end
+
+			local itemname = Info[1].item.market_hash_name
+			local price = FS.formatCurrency(Info[1].price / 100)
+			local seller = Info[1].seller.username
+
+			local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
+			local unixdate = FS.unixtodate(timeobtained)
+			local secondssincesale = os.time() + -tonumber(timeobtained)
+
+			FS.Report("The best deal I've found for a "..tostring(itemname).." is "..tostring(price).." being sold by "..tostring(seller),CLP)
+			wait(0.3)
+			FS.Report("This listing was posted at "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
+			wait(0.3)
+			FS.Report("'"..tostring(Info[1].description).."'",CLP)
+		end
+	end,
+
+	[".cancelpathfinding"] = function()
+		FS.CancelPathfinding()
+		CurrentlyWalkingToOwner = false
+		keeporbiting = false
+		stopbang = true
+	end,
+	
+	[".hostinfo"] = function()
+		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
+		FS.Report("Account Being hosted by "..HostInfoTable.isp.." Server Location Is "..HostInfoTable.city.." "..HostInfoTable.region,CLP)
+	end,
 
 }
 
@@ -2165,6 +2280,16 @@ function ChatFromOwnerDetect(msg, player)
 			end
 		end
 	end
+
+	for CMI,CMV in pairs(_G.CustomCommands) do
+		if CommandIssued == false then
+			if string.find(msg, "%"..CMI) then
+				CommandIssued = true
+				LastCommandIssuedby = player
+				CMV(msg)
+			end
+		end
+	end
 end
 
 for _,p in ipairs(Players:GetPlayers()) do
@@ -2176,18 +2301,16 @@ for _,p in ipairs(Players:GetPlayers()) do
 end
 
 Players.PlayerAdded:Connect(function(p)
+	print("[Joined] "..p.Name)
+	AddUserIDToTable(p.UserId)
+	GenerateSession(p, "Joined")
+	LogChatMessages(p,"Joined")
 	p.Chatted:Connect(function(msg)
 		if table.find(CommandOwnershipList, tostring(p)) then
 			ChatFromOwnerDetect(msg, tostring(p))
-			
-			print("[Joined] "..p.Name)
-			AddUserIDToTable(p.UserId)
-			GenerateSession(p, "Joined")
-			LogChatMessages(p,"Joined")
 		end
 	end)
 end)
-
 
 Players.PlayerRemoving:Connect(function(player)
 	print("[Leaving] "..player.Name)
@@ -2210,7 +2333,11 @@ for i,v in pairs(CommandsTable) do
 end
 local CustomTotalCmds = 0
 FS.Report(TotalCmds.." Commands Loaded.",CLO )
-
+for i,v in pairs(_G.CustomCommands) do
+	CustomTotalCmds = CustomTotalCmds + 1
+end
+FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
 
 PingTest()
+
