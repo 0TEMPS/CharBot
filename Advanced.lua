@@ -952,7 +952,7 @@ local CommandsTable = {
 
 				WalkTooTarget(AutoFilledName, false, Prompt, LastCommandIssuedby)
 				
-				local Question = FS.Prompt("What's your response to the question?",game:GetService("Players"):FindFirstChild(AutoFilledName))
+				local Question = FS.Prompt(Prompt,game:GetService("Players"):FindFirstChild(AutoFilledName))
 				CurrentlyWalkingToOwner = false
 				SetOwner(AutoFilledName)
 				FS.Report(AutoFilledName.." said '"..Question.."'")
