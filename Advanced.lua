@@ -5,7 +5,7 @@ CHAR-BOT ]=]
 -- Version
 
 local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.5 (Advanced)"
+local VersionNumber = "5.6 (Advanced)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -1635,7 +1635,7 @@ local CommandsTable = {
 				if table.find(DisapprovalWords,string.lower(Prompt)) then
 				else
 					local ItemID = FS.GetLimID(Prompt)
-					
+
 					local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
 					local ItemTable = FS.Get_Request("https://rblx.trade/api/v2/users/"..UserID.."/inventory?allowRefresh=false")
 
@@ -1656,9 +1656,9 @@ local CommandsTable = {
 
 									local UAIDTable = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/ownership-history")
 									local SerialIfCan = FS.Get_Request("https://rblx.trade/api/v2/user-asset/"..TargetUAID.."/info")
-									
+
 									local NumberOfOwners = #UAIDTable
-									
+
 									FS.Report(AutoFilledName.."'s "..ItemTable.inventory[TableNumber].name.." has been owned by "..NumberOfOwners.." different accounts on record.",CLP)
 									wait(0.3)
 									if SerialIfCan.serialNumber == nil or SerialIfCan.serialNumber == "nil" or SerialIfCan.serialNumber == "" then
@@ -1670,11 +1670,11 @@ local CommandsTable = {
 									local secondssincesale = os.time() + -tonumber(timeobtained)
 									wait(0.3)
 									local oldowner = tostring(UAIDTable[2].username)
-									
+
 									if oldowner == "nil" then
 										oldowner = "an unknown user"
 									end
-									
+
 									FS.Report("It looks like they obtained this item from "..oldowner.." on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 								end
 							end
@@ -1684,7 +1684,7 @@ local CommandsTable = {
 			end
 		end
 	end,
-	
+
 	[".sales"] = function(Arg)
 		if string.sub(Arg, 1, 6) == ".sales" then
 			local PlayerArg = string.sub(Arg, 8)
@@ -1697,7 +1697,7 @@ local CommandsTable = {
 				local UserID = Players:GetUserIdFromNameAsync(AutoFilledName)
 				local SalesData = FS.Get_Request("https://rblx.trade/api/v2/catalog/users/"..UserID.."/sales?limit=100")
 				local SalesData = SalesData.data
-				
+
 				if #SalesData == 0 then
 					FS.Report("Unable to find any sales data for "..AutoFilledName,CLP)
 					return
@@ -1705,12 +1705,12 @@ local CommandsTable = {
 				wait(1)
 				FS.Report("I've found data for "..#SalesData.." item sales from "..AutoFilledName..", the most recent one is..", CLP)
 				local itemId = SalesData[1].assetId
-				
+
 				FS.Report(AutoFilledName.." sold their "..MS:GetProductInfo(itemId).Name.." for "..FS.abbreviate(SalesData[1].estimatedRobux).." robux",CLP)
 				local timeobtained = string.format('%d',FS.parse_json_date(SalesData[1].createdAt))
 				local unixdate = FS.unixtodate(timeobtained)
 				local secondssincesale = os.time() + -tonumber(timeobtained)
-				
+
 				FS.Report("It looks like they sold this item on "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
 			end
 		end
@@ -2016,22 +2016,22 @@ local CommandsTable = {
 			wait(0.5)
 		end
 	end,
-	
+
 	[".randomskin"] = function()
 		local CsGoTable = FS.CsgoSkinTable()
-		
+
 		local skinindex = math.random(1,#CsGoTable)
 		local skinkey = CsGoTable[skinindex]
-		
+
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
 		local formattedQueryString = FS.formatQueryString(tostring(skinkey.name).." ("..tostring(wear.name..")"))
 
 		local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
-		
+
 		local wear = skinkey.wears[math.random(1,#skinkey.wears)]
-		
+
 		FS.Report("Random skin : "..tostring(skinkey.name).." ("..tostring(wear.name)..") from '"..tostring(skinkey.collections[1].name).."'",CLP)
-		
+
 		if Info == nil or Info == "nil" or Info[1] == nil then
 			return
 		end
@@ -2045,16 +2045,16 @@ local CommandsTable = {
 		wait(1)
 		FS.Report("It's worth about "..tostring(price).." and has a rarity of "..tostring(rarity),CLP)
 
-		
+
 	end,
-	
+
 	[".searchskin"] = function(Arg)
 		if string.sub(Arg, 1, 11) == ".searchskin" then
 			local SkinArg = string.sub(Arg, 13)
 			local formattedQueryString = FS.formatQueryString(SkinArg)
-			
+
 			local Info = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString)
-			
+
 			if Info == nil or Info == "nil" or Info[1] == nil then
 				local formattedQueryString2 = FS.formatQueryString(SkinArg.." (Factory New)")
 				local Info2 = FS.Get_Request("https://csfloat.com/api/v1/listings?market_hash_name="..formattedQueryString2)
@@ -2065,15 +2065,15 @@ local CommandsTable = {
 					Info = Info2
 				end
 			end
-			
+
 			local itemname = Info[1].item.market_hash_name
 			local price = FS.formatCurrency(Info[1].price / 100)
 			local seller = Info[1].seller.username
-			
+
 			local timeobtained = string.format('%d',FS.parse_json_date(Info[1].created_at))
 			local unixdate = FS.unixtodate(timeobtained)
 			local secondssincesale = os.time() + -tonumber(timeobtained)
-			
+
 			FS.Report("The best deal I've found for a "..tostring(itemname).." is "..tostring(price).." being sold by "..tostring(seller),CLP)
 			wait(0.3)
 			FS.Report("This listing was posted at "..FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year,CLP)
@@ -2081,12 +2081,17 @@ local CommandsTable = {
 			FS.Report("'"..tostring(Info[1].description).."'",CLP)
 		end
 	end,
-	
+
 	[".cancelpathfinding"] = function()
 		FS.CancelPathfinding()
 		CurrentlyWalkingToOwner = false
 		keeporbiting = false
 		stopbang = true
+	end,
+	
+	[".hostinfo"] = function()
+		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
+		FS.Report("Account Being hosted by "..HostInfoTable.isp,CLP)
 	end,
 
 }
