@@ -588,12 +588,12 @@ function ConvertToValidFilename(timestamp)
 end
 
 function UpdateSessionFile()
-	writefile(FolderName..`/`..FileName, HTTPS:JSONEncode(UserIDTable))
+	writefile(FolderName..`/`..FileName, HTTP:JSONEncode(UserIDTable))
 	print("Session File Updated.")
 end
 
 function UpdateChatLogFile()
-	writefile(FolderName..`/`..FileName..`/SC`, HTTPS:JSONEncode(ChatLog))
+	writefile(FolderName..`/`..FileName..`/SC`, HTTP:JSONEncode(ChatLog))
 	print("ChatLogging File Updated.")
 end
 
