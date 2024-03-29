@@ -939,6 +939,26 @@ local CommandsTable = {
 			end	
 		end
 	end,
+	
+	[".ask"] = function(Arg)
+		if string.sub(Arg, 1, 4) == ".ask" then
+			local PlayerName = string.sub(Arg, 6)
+			
+			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
+			if AutoFilledName == "Invalid Username." then
+				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
+			else
+				local Prompt = FS.Prompt("What Should I ask "..AutoFilledName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
+
+				WalkTooTarget(AutoFilledName, false, Prompt, LastCommandIssuedby)
+				
+				local Question = FS.Prompt("What's your response to the question?",game:GetService("Players"):FindFirstChild(AutoFilledName))
+				CurrentlyWalkingToOwner = false
+				SetOwner(AutoFilledName)
+				FS.Report(AutoFilledName.." said '"..Question.."'")
+			end	
+		end
+	end,
 
 	[".serversize"] = function()
 		local servertable = FS.ServerSize()
