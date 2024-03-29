@@ -2091,7 +2091,7 @@ local CommandsTable = {
 	
 	[".hostinfo"] = function()
 		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
-		FS.Report("Account Being hosted by "..HostInfoTable.isp,CLP)
+		FS.Report("Account Being hosted by "..HostInfoTable.isp..", Server Location Is "..HostInfoTable.city.." "..HostInfoTable.region,CLP)
 	end,
 
 }
