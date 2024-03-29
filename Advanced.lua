@@ -93,6 +93,7 @@ local DisapprovalWords = _G.BotConfig["General Settings"].DisapprovalWords
 local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
+local CurrentlyPathfinding = false
 local CommandOwnershipList = {}
 local RepeatList = {}
 
@@ -279,13 +280,15 @@ function SetOwner(NewOwner)
 		if ownerchar:FindFirstChild("TargetPart") then
 			coroutine.wrap(function()
 				while CurrentlyWalkingToOwner do
+					CurrentlyPathfinding = true
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
 					FS.PathfindPart(parttowalktoo)
 					wait(0.01)
-
 					if CurrentlyWalkingToOwner == false then
+						CurrentlyPathfinding = false
 						break
 					end
+
 				end
 			end)()
 		end
@@ -534,10 +537,14 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				CurrentlyWalkingToOwner = false
-				wait(1)
-				FS.Report("Attempting to follow "..AutoFilledName.."...",CLP)
-				SetOwner(AutoFilledName)
+				if CurrentlyPathfinding == true then
+					FS.Report("Already PathFinding, Ignoring command from "..LastCommandIssuedby.."!",CLP)
+				else
+					CurrentlyWalkingToOwner = false
+					wait(1)
+					FS.Report("Attempting to follow "..AutoFilledName.."...",CLP)
+					SetOwner(AutoFilledName)
+				end
 			end		 
 		end
 
@@ -584,7 +591,11 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
 			else
-				WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner, LastCommandIssuedby)
+				if CurrentlyPathfinding == true then
+					FS.Report("Already PathFinding, Ignoring command from "..LastCommandIssuedby.."!",CLP)
+				else
+					WalkTooTarget(AutoFilledName, true, "Found "..tostring(PlayerName)..", returning to ".._G.BotConfig["General Settings"].Owner, LastCommandIssuedby)
+				end
 			end	
 		end
 	end,
@@ -939,11 +950,11 @@ local CommandsTable = {
 			end	
 		end
 	end,
-	
+
 	[".ask"] = function(Arg)
 		if string.sub(Arg, 1, 4) == ".ask" then
 			local PlayerName = string.sub(Arg, 6)
-			
+
 			local AutoFilledName = FS.AutoFillPlayer(PlayerName)
 			if AutoFilledName == "Invalid Username." then
 				FS.Report("Invalid Username, couldn't find "..PlayerName,CLP)
@@ -951,7 +962,7 @@ local CommandsTable = {
 				local Prompt = FS.Prompt("What Should I ask "..AutoFilledName.."?",game:GetService("Players"):FindFirstChild(LastCommandIssuedby))
 
 				WalkTooTarget(AutoFilledName, false, Prompt, LastCommandIssuedby)
-				
+
 				local Question = FS.Prompt(Prompt,game:GetService("Players"):FindFirstChild(AutoFilledName))
 				CurrentlyWalkingToOwner = false
 				SetOwner(AutoFilledName)
@@ -1841,21 +1852,25 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				stopbang = false
-				local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
-				wait(1)
-				local brick2 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
-				SetOwner(AutoFilledName)
-				while true do
+				if CurrentlyPathfinding == true then
+					FS.Report("Already PathFinding, Ignoring command from "..LastCommandIssuedby.."!",CLP)
+				else
+					stopbang = false
+					local brick1 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,0,0), false, "BangPart1")
+					wait(1)
+					local brick2 = FS.CreatePlrLockBrick(AutoFilledName, Vector3.new(0,5,0), false, "BangPart2")
+					SetOwner(AutoFilledName)
+					while true do
 
-					FS.PathfindPart(brick1)
-					wait(0.01)
-					FS.PathfindPart(brick2)
+						FS.PathfindPart(brick1)
+						wait(0.01)
+						FS.PathfindPart(brick2)
 
-					if stopbang == true then
-						brick1:Destroy()
-						brick2:Destroy() 
-						break
+						if stopbang == true then
+							brick1:Destroy()
+							brick2:Destroy() 
+							break
+						end
 					end
 				end
 			end
@@ -1958,44 +1973,47 @@ local CommandsTable = {
 			if AutoFilledName == "Invalid username." then
 				FS.Report("Invalid username.",CLP)
 			else
-				local parts = FS.CreatePlrLockRing(AutoFilledName, 6, false, 6)
+				if CurrentlyPathfinding == true then
+					FS.Report("Already PathFinding, Ignoring command from "..LastCommandIssuedby.."!",CLP)
+				else
+					local parts = FS.CreatePlrLockRing(AutoFilledName, 6, false, 6)
 
-				keeporbiting = true
-				CurrentlyWalkingToOwner = false
-				CirclesDone = 0
-				local thing = coroutine.wrap(function()
-					while true do
-						for i,v in pairs(parts) do
-							if keeporbiting == true then
-								FS.PathfindPart(v)
-								wait(0.1)
-							end
-							if keeporbiting == false then
-
-								for i,v in pairs(parts) do
-									v:Destroy()
+					keeporbiting = true
+					CurrentlyWalkingToOwner = false
+					CirclesDone = 0
+					local thing = coroutine.wrap(function()
+						while true do
+							for i,v in pairs(parts) do
+								if keeporbiting == true then
+									FS.PathfindPart(v)
+									wait(0.1)
 								end
-								wait(0.1)
-								break
+								if keeporbiting == false then
+
+									for i,v in pairs(parts) do
+										v:Destroy()
+									end
+									wait(0.1)
+									break
+
+								end
 
 							end
+							if keeporbiting == true then
+								CirclesDone = CirclesDone + 1
+								FS.Report(CirclesDone.." Laps ran around "..AutoFilledName,CLP)
+							else
+								return
 
+							end
+							wait(0.1)
 						end
-						if keeporbiting == true then
-							CirclesDone = CirclesDone + 1
-							FS.Report(CirclesDone.." Laps ran around "..AutoFilledName,CLP)
-						else
-							return
-
-						end
-						wait(0.1)
-					end
-				end)()
+					end)()
 
 
 
+				end
 			end
-
 		end
 	end,
 
@@ -2108,7 +2126,7 @@ local CommandsTable = {
 		keeporbiting = false
 		stopbang = true
 	end,
-	
+
 	[".hostinfo"] = function()
 		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
 		FS.Report("Account Being hosted by "..HostInfoTable.isp.." Server Location Is "..HostInfoTable.city.." "..HostInfoTable.region,CLP)
