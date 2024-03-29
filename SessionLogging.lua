@@ -93,10 +93,6 @@ function GenerateSession(player, action)
 	if action == "Joined" then
 		print("New session '" .. sessionName .. "' created for UserID: " .. userID)
 	else
-		print("Session '" .. sessionName .. "' updated for UserID: " .. userID)
-		print("JoinTime: " .. tostring(UserIDTable[userID]["sessions"][sessionName]["JoinTime"]))
-		print("LeaveTime: " .. tostring(UserIDTable[userID]["sessions"][sessionName]["LeaveTime"]))
-		print("SessionTime: " .. tostring(UserIDTable[userID]["sessions"][sessionName]["SessionTime"]))
 	end
 end
 
@@ -150,7 +146,7 @@ function LogChatMessages(player, action)
 			end
 			ChatLog[userID][timeStamp] = message
 		end)
-		print("Chat logging started for UserID: " .. userID)
+		
 
 		-- Store the connection object in the ChatConnections table
 		ChatConnections[player] = connection
@@ -160,7 +156,7 @@ function LogChatMessages(player, action)
 		if connection then
 			connection:Disconnect()
 			ChatConnections[player] = nil
-			print("Chat logging stopped for UserID: " .. userID)
+			
 		else
 			print("Error: Chat connection not found for UserID: " .. userID)
 		end
