@@ -280,12 +280,10 @@ function SetOwner(NewOwner)
 		if ownerchar:FindFirstChild("TargetPart") then
 			coroutine.wrap(function()
 				while CurrentlyWalkingToOwner do
-					CurrentlyPathfinding = true
 					local parttowalktoo = ownerchar:WaitForChild("TargetPart")
 					FS.PathfindPart(parttowalktoo)
 					wait(0.01)
 					if CurrentlyWalkingToOwner == false then
-						CurrentlyPathfinding = false
 						break
 					end
 
