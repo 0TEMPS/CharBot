@@ -10,7 +10,7 @@ local LogService = game:GetService("LogService")
 local PFS = game:GetService("PathfindingService")
 local UGS = game:GetService("UserGameSettings")
 
-local FSVersion = "2.2 (CSGOSKINS2)"
+local FSVersion = "2.3 (PF Fixes)"
 
 local Char = Players.LocalPlayer.Character
 local Humanoid = Char.Humanoid
@@ -37,7 +37,8 @@ if game:FindFirstChild("TextChatService") then
 	end
 end
 
-local CancelPathFind = false
+
+local CurrentlyPathing = false
 local FSReport = {}
 
 local StatsTable = {
@@ -141,28 +142,24 @@ end
 
 
 function FS.PathfindPart(PartInstance)
+	if CurrentlyPathing == true then
+		FS.Report("Already Pathfinding, disregarding last command.")
+		return
+	end
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	local path = PFS:CreatePath()
 	path:ComputeAsync(Char.Head.Position, PartInstance.Position)
 	local waypoints = path:GetWaypoints()
-	if CancelPathFind == true then
-		CancelPathFind = false
-		return 
-	end
+	
 	for i, waypoint in pairs(waypoints) do
-		if CancelPathFind == true then
-			CancelPathFind = false
-			return 
-		end
+	
 		Humanoid:MoveTo(waypoint.Position)
 		Humanoid.MoveToFinished:Wait(2)
 	end
-	if CancelPathFind == true then
-		CancelPathFind = false
-		return 
-	end
+
 	Humanoid:MoveTo(PartInstance.Position)
 	Humanoid.MoveToFinished:Wait(2)
+	CurrentlyPathing = false
 end
 
 function FS.Environment(Info)
