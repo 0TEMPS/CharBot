@@ -136,7 +136,7 @@ function FS.ReplaceUrlSpacing(text)
 end
 
 function FS.CancelPathfinding()
-	CancelPathFind = true
+	CurrentlyPathing = true
 end
 
 
