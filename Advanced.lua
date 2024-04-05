@@ -693,12 +693,8 @@ local CommandsTable = {
 				local response = FS.Get_Request("https://avatar.roblox.com/v1/users/"..userid.."/outfits")
 
 
-				FS.Report(tostring(AutoFilledName).." Has "..tostring(response.total).." outfits in total, I was able to collect data on "..tostring(response.filteredCount).." of these outfits.",CLP)
+				FS.Report(tostring(AutoFilledName).." Has created "..tostring(response.total).." outfits in total, "..tostring(response.filteredCount).." of these outfits are valid.",CLP)
 				wait(0.5)
-				local Info1 = response.data[math.random(1,tonumber(response.filteredCount))].name
-				local Info2 = response.data[math.random(1,tonumber(response.filteredCount))].name
-				local Info3 = response.data[math.random(1,tonumber(response.filteredCount))].name
-				FS.Report("Some names of their outfits are, "..Info1..", "..Info2.." and "..Info3)
 
 			end
 		end
