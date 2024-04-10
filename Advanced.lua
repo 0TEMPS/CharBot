@@ -4,8 +4,8 @@ CHAR-BOT ]=]
 
 -- Version
 
-local VersionName = "Char-Bot (OQAL)"
-local VersionNumber = "5.6 (Advanced)"
+local VersionName = "Char-Bot (TMPS)"
+local VersionNumber = "5.7 (Advanced)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -94,6 +94,7 @@ local CurrentOwner = _G.BotConfig["General Settings"].Owner
 local AutoJumpWhenSitting = _G.BotConfig["General Settings"].AutoJumpWhenSitting
 
 local CurrentlyPathfinding = false
+local CurrentlyCompletingTasks = false
 local CommandOwnershipList = {}
 local RepeatList = {}
 
@@ -460,6 +461,42 @@ function PingTest()
 	end
 	wait(0.3)
 	CBD.PingTest(ResponseTable, FS.TestConnection())
+end
+
+function AutoTasks()
+	while CurrentlyCompletingTasks == true do
+		local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
+		print(tostring(PlayerName))
+		local GreetingMessage = nil
+
+		if RequestTime "%p" == "AM" then
+			GreetingMessage = "🌅 Good Morning"
+		elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") <= 6 then
+			GreetingMessage = "☀️ Good Afternoon"
+		elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") >= 7 then
+			GreetingMessage = "🌙 Good Evening"
+		end
+
+		local userid = Players:GetUserIdFromNameAsync(tostring(PlayerName))
+		local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
+		local Rating = math.random(1,10)
+		local hats = {
+			["Hats"] = string.split(humdesc.HatAccessory,",")
+		}
+		local hatnum = math.random(1,#hats["Hats"])
+		local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
+		local StringMessage = GreetingMessage.." "..tostring(PlayerName)..". I like your "..hatname
+
+		if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
+			StringMessage = tostring(PlayerName).." I like your fit, would be better if you had hats."
+			wait(3)
+		end
+
+		WalkTooTarget(PlayerName, false, StringMessage, LastCommandIssuedby)
+	end
+	wait(3)
+	FS.Report("Alright whos next?",CLP)
+	wait(0.5)
 end
 
 SetOwner(CurrentOwner)
@@ -2016,37 +2053,8 @@ local CommandsTable = {
 	end,
 
 	[".autotest"] = function()
-		while true do
-			local PlayerName = Players:GetChildren()[math.random(1,#Players:GetChildren())]
-			print(tostring(PlayerName))
-			local GreetingMessage = nil
-
-			if RequestTime "%p" == "AM" then
-				GreetingMessage = "🌅 Good Morning"
-			elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") <= 6 then
-				GreetingMessage = "☀️ Good Afternoon"
-			elseif RequestTime "%p" == "PM" and tonumber(RequestTime "%I") >= 7 then
-				GreetingMessage = "🌙 Good Evening"
-			end
-
-			local userid = Players:GetUserIdFromNameAsync(tostring(PlayerName))
-			local humdesc = Players:GetHumanoidDescriptionFromUserId(userid)
-			local Rating = math.random(1,10)
-			local hats = {
-				["Hats"] = string.split(humdesc.HatAccessory,",")
-			}
-			if hats["Hats"][1] == nil or hats["Hats"][1] == "" then
-				FS.Report(tostring(PlayerName).." Would get a compliment, but they have no hats on.",CLP)
-				wait(3)
-			else
-				local hatnum = math.random(1,#hats["Hats"])
-				local hatname = MS:GetProductInfo(hats["Hats"][hatnum]).Name
-				WalkTooTarget(PlayerName, false, GreetingMessage.." "..tostring(PlayerName)..". I like your "..hatname, LastCommandIssuedby)
-			end
-			wait(3)
-			FS.Report("Alright whos next?",CLP)
-			wait(0.5)
-		end
+		CurrentlyCompletingTasks = true
+		AutoTasks()
 	end,
 
 	[".randomskin"] = function()
@@ -2125,6 +2133,10 @@ local CommandsTable = {
 		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
 		FS.Report("Account Being hosted by "..HostInfoTable.isp.." Server Location Is "..HostInfoTable.city.." "..HostInfoTable.region,CLP)
 	end,
+	
+	[".off"] = function()
+		CurrentlyCompletingTasks = false
+	end,
 
 }
 
@@ -2173,8 +2185,18 @@ Players.PlayerAdded:Connect(function(p)
 			ChatFromOwnerDetect(msg, tostring(p))
 		end
 	end)
+	
+	if p.Name == OwnerPlayerInstance.Name then
+		CurrentlyCompletingTasks = false
+	end
 end)
 
+Players.PlayerRemoving:Connect(function(p)
+	if p.Name == OwnerPlayerInstance.Name then
+		CurrentlyCompletingTasks = true
+		AutoTasks()
+	end
+end)
 
 
 AutoJumpIfSat()
