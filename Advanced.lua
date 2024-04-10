@@ -4,8 +4,8 @@ CHAR-BOT ]=]
 
 -- Version
 
-local VersionName = "Char-Bot (TMPS)"
-local VersionNumber = "5.7 (Advanced)"
+local VersionName = "Char-Bot (OQAL)"
+local VersionNumber = "5.6 (Advanced)"
 
 local StartupClock = os.clock()
 local ClientTimeData = os.date
@@ -2193,6 +2193,7 @@ end)
 
 Players.PlayerRemoving:Connect(function(p)
 	if p.Name == OwnerPlayerInstance.Name then
+		FS.Report(tostring(OwnerPlayerInstance.Name).." Left, starting tasks...", CLP)
 		CurrentlyCompletingTasks = true
 		AutoTasks()
 	end
