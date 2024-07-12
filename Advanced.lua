@@ -102,6 +102,7 @@ local LastCommandIssuedby = CurrentOwner
 
 table.insert(CommandOwnershipList, CurrentOwner)
 wait(0.2)
+local FS = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/FunctionService.lua"))()
 FS.SetChatPrefix("[💬] ", "[❓] ")
 
 local UniverseRequest = FS.Get_Request("https://apis.roblox.com/universes/v1/places/"..tostring(ClientInfo["ServerInfo"].PlaceID).."/universe")
