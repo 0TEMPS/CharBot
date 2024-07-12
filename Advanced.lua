@@ -112,9 +112,6 @@ local unixdate = FS.unixtodate(ClientInfo.BotInfo.ClientStartTime)
 ClientInfo.BotInfo.ClientStartTime = FS.convertmonth(unixdate.month).." "..unixdate.day..", "..unixdate.year.." @ "..unixdate.hour..":"..unixdate.min..":"..unixdate.sec
 local Place = MS:GetProductInfo(game.PlaceId).Name
 
-local CBD = loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/CharBotDisplay.lua"))()
-CBD.CreateUi("[💬] OQAL: "..VersionName.." V"..VersionNumber, ClientInfo)
-CBD.CreateCommandOutput()
 
 if _G.BotConfig["General Settings"]["Error-Logging"] == true then
 	local function onMessageOut(message, messageType)
@@ -132,7 +129,7 @@ end
 if _G.BotConfig["General Settings"]["Log-Commands"] == true then
 	local function onMessageOut(message, messageType)
 		local output = coroutine.wrap(function()
-			CBD.Output(message)
+			
 		end)
 		output()
 	end
@@ -163,9 +160,8 @@ elseif ClientInfo["ServerInfo"].ChatType == "TCS" then
 	MessageFunction = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral").MessageReceived
 end
 
-CBD.ClientInfo(ClientInfo)
 
-CBD.NewsTab(FS.Get_Request("https://raw.githubusercontent.com/0TEMPS/CharBot/main/News.json"))
+)
 
 local parttowalktoo = nil
 
@@ -461,7 +457,7 @@ function PingTest()
 		ResponseTable["https://games.roblox.com"] = "<font color='#e30505'>UNABLE TO CONNECT</font>"
 	end
 	wait(0.3)
-	CBD.PingTest(ResponseTable, FS.TestConnection())
+	
 end
 
 function AutoTasks()
@@ -2202,12 +2198,9 @@ end)
 
 
 AutoJumpIfSat()
-CBD.CreateBotConfigTab()
-wait(0.1)
-CBD.BotConfigSettings(_G.BotConfig)
 
-CBD.CommandListTab()
-CBD.AddCommands(CommandsTable)
+wait(0.1)
+
 local TotalCmds = 0
 for i,v in pairs(CommandsTable) do
 	TotalCmds = TotalCmds + 1
