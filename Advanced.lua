@@ -241,7 +241,7 @@ function LimitedInv(Playername)
 								counter = counter + 1
 								if v2[2] == "BIH" then -- to avoid tags lol
 								else
-									print("i might have been the ISSUE!!!!!!!!")
+									table.insert(itemstosay,v2[2])
 								end
 							end
 						end
