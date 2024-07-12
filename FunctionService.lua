@@ -236,6 +236,7 @@ function FS.Request(URL, METHOD, HEADERS)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
 	URL2 = FS.ReplaceUrlSpacing(URL)
+	print("FS.REQUEST DATA: "..URL2.."/"..METHOD.."/"..HEADERS)
 	local Getrequest
 	Getrequest = request({
 		Url = URL2,
