@@ -241,7 +241,7 @@ function LimitedInv(Playername)
 								counter = counter + 1
 								if v2[2] == "BIH" then -- to avoid tags lol
 								else
-									table.insert(itemstosay,v2[2])
+									print("i might have been the ISSUE!!!!!!!!")
 								end
 							end
 						end
@@ -2134,7 +2134,7 @@ local CommandsTable = {
 		local HostInfoTable = FS.Get_Request("http://ip-api.com/json/")
 		FS.Report("Account Being hosted by "..HostInfoTable.isp.." Server Location Is "..HostInfoTable.city.." "..HostInfoTable.region,CLP)
 	end,
-	
+
 	[".off"] = function()
 		CurrentlyCompletingTasks = false
 	end,
@@ -2186,7 +2186,7 @@ Players.PlayerAdded:Connect(function(p)
 			ChatFromOwnerDetect(msg, tostring(p))
 		end
 	end)
-	
+
 	if p.Name == OwnerPlayerInstance.Name then
 		CurrentlyCompletingTasks = false
 	end
