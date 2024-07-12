@@ -28,6 +28,24 @@ function Request(URL, METHOD, HEADERS)
 	return Decode
 end
 
+function FS.PrintTable(tableobj)
+	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
+	if typeof(tableobj) == "table" then
+		print(tableobj)
+		for i,v in pairs(tableobj) do
+			wait(0.01)
+			if typeof(v) == "table" then
+				print("\n\n-- // -- "..tostring(i).." TABLE -- // -- \n")
+				FS.PrintTable(v)
+			else
+				print(tostring(i).." = "..tostring(v))
+			end
+		end
+	else
+		warn("PrintTable Function : Object is not a table!")
+	end
+end
+
 local headers = {
 	["X-Api-Key"] = "JlqHW95ZeE38VnjxRVrbzpMuUGUf1USGgqssQPag"
 }
