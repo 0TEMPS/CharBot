@@ -504,7 +504,7 @@ SetOwner(CurrentOwner)
 
 
 
-FS.Report(FS.TestConnection(),CLO)
+--FS.Report(FS.TestConnection(),CLO)
 
 local OwnerPlayerInstance = Players:FindFirstChild(CurrentOwner)
 local OwnerCharacter = OwnerPlayerInstance.Character
