@@ -219,7 +219,7 @@ function WearingLimiteds(Playername)
 end
 
 function LimitedInv(Playername)
-
+	print("LIMITED INV RUNNING!!!!!!!!!!!!!!!!!!!!!!!!!")
 	if Playername == "Invalid username." then
 		FS.Report("Invalid username.",CLP)
 	else
