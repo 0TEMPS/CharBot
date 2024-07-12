@@ -1122,6 +1122,25 @@ local CommandsTable = {
 		end
 	end,
 
+	
+	[".wave"] = function()
+
+		if ClientInfo.ChatType == "LCS" then
+			FS.Report(".wave only works on games that use TCS, this game is using LCS.", CLP)
+		else
+			FS.Report("/e wave", true, true)
+		end
+	end,
+
+	[".cheer"] = function()
+
+		if ClientInfo.ChatType == "LCS" then
+			FS.Report(".cheer only works on games that use TCS, this game is using LCS.", CLP)
+		else
+			FS.Report("/e cheer", true, true)
+		end
+	end,
+
 	[".console"] = function()
 
 		if ClientInfo.ChatType == "LCS" then
