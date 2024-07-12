@@ -47,7 +47,7 @@ function FS.PrintTable(tableobj)
 end
 
 local headers = {
-	["X-Api-Key"] = "JlqHW95ZeE38VnjxRVrbzpMuUGUf1USGgqssQPag"
+	["X-Api-Key"] = "oFIQeqkCboqHggF2M0WkVbKxyIZ9v27K9I7KnU97"
 }
 
 local PlanetInfo = Request("https://api.api-ninjas.com/v1/planets?name=mars","GET",headers)
