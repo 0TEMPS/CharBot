@@ -211,6 +211,7 @@ function FS.Get_Request(URL)
 	StatsTable.TotalCommandsIssued = StatsTable.TotalCommandsIssued + 1
 	StatsTable.TotalCalls = StatsTable.TotalCalls + 1
 	URL2 = FS.ReplaceUrlSpacing(URL)
+	print("FS.GET_REQUEST"..URL)
 	local Getrequest
 	Getrequest = request({
 		Url = URL2,
