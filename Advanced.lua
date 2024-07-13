@@ -2232,6 +2232,3 @@ for i,v in pairs(_G.CustomCommands) do
 end
 FS.Report(CustomTotalCmds.." Custom Commands Loaded.",CLO )
 
-
-PingTest()
-
