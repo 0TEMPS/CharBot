@@ -1068,7 +1068,7 @@ local CommandsTable = {
 
 			local PlanetName = string.sub(Arg, 9)
 
-			local PlanetInfo = FS.Request("https://api.api-ninjas.com/v1/planets?name="..PlanetName,"GET",headers)
+			local PlanetInfo = FS.Get_Request("https://api.api-ninjas.com/v1/planets?name="..PlanetName.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 			FS.Report(PlanetInfo[1].name.." has a current average surface temp. of "..FS.round(FS.ConvertKtoF(PlanetInfo[1].temperature)).." (F) .",CLP)
 			wait(0.1)
 			FS.Report("It takes "..PlanetInfo[1].name.." "..FS.comma_value(PlanetInfo[1].period).." Earth days to orbit it's host star.",CLP)
@@ -1082,7 +1082,7 @@ local CommandsTable = {
 			["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
 		}
 
-		local RandomWord = FS.Request("https://api.api-ninjas.com/v1/randomword","GET",headers)
+		local RandomWord = FS.Get_Request("https://api.api-ninjas.com/v1/randomword".."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 
 		FS.PrintTable(RandomWord)
 		FS.Report(RandomWord.word,CLP)
@@ -1097,7 +1097,7 @@ local CommandsTable = {
 
 			local CommodityName = string.sub(Arg, 12)
 
-			local CommodityInfo = FS.Request("https://api.api-ninjas.com/v1/commodityprice?ticker="..CommodityName,"GET",headers)
+			local CommodityInfo = FS.Get_Request("https://api.api-ninjas.com/v1/commodityprice?ticker="..CommodityName.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 			FS.PrintTable(CommodityInfo)
 
 
@@ -1122,7 +1122,7 @@ local CommandsTable = {
 		end
 	end,
 
-	
+
 	[".wave"] = function()
 
 		if ClientInfo.ChatType == "LCS" then
@@ -1155,13 +1155,10 @@ local CommandsTable = {
 		if string.sub(Arg, 1, 6) == ".stock" then
 
 
-			local headers = {
-				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
-			}
 
 			local StockName = string.sub(Arg, 8)
 
-			local StockInfo = FS.Request("https://api.api-ninjas.com/v1/stockprice?ticker="..StockName,"GET",headers)
+			local StockInfo = FS.Get_Request("https://api.api-ninjas.com/v1/stockprice?ticker="..StockName.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 
 			if StockInfo["error"] ~= nil then
 				FS.Report(StockInfo["error"],CLP)
@@ -1177,16 +1174,13 @@ local CommandsTable = {
 		if string.sub(Arg, 1, 5) == ".city" then
 
 
-			local headers = {
-				["X-Api-Key"] = _G.BotConfig["API Keys"].APININJA_KEY
-			}
 
 			local CityName = string.sub(Arg, 7)
 
 
 
 			print("https://api.api-ninjas.com/v1/city?name="..CityName)
-			local CityInfo = FS.Request("https://api.api-ninjas.com/v1/city?name="..CityName,"GET",headers)
+			local CityInfo = FS.Get_Request("https://api.api-ninjas.com/v1/city?name="..CityName.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 
 			if CityInfo["error"] ~= nil then
 				FS.Report(CityInfo["error"],CLP)
@@ -1208,7 +1202,7 @@ local CommandsTable = {
 
 			local CityName = string.sub(Arg, 10)
 
-			local WeatherInfo = FS.Request("https://api.api-ninjas.com/v1/weather?city="..CityName,"GET",headers)
+			local WeatherInfo = FS.Get_Request("https://api.api-ninjas.com/v1/weather?city="..CityName.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 
 			if WeatherInfo["error"] ~= nil then
 				FS.Report(WeatherInfo["error"],CLP)
@@ -1242,7 +1236,7 @@ local CommandsTable = {
 
 			local RhymeWord = string.sub(Arg, 8)
 
-			local RhymeInfo = FS.Request("https://api.api-ninjas.com/v1/rhyme?word="..RhymeWord,"GET",headers)
+			local RhymeInfo = FS.Get_Request("https://api.api-ninjas.com/v1/rhyme?word="..RhymeWord.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 			FS.PrintTable(RhymeInfo)
 			if RhymeInfo["error"] ~= nil then
 				FS.Report(RhymeInfo["error"],CLP)
@@ -1268,7 +1262,7 @@ local CommandsTable = {
 			}
 
 			local RhymeWord = string.sub(Arg, 9)
-			local DefineInfo = FS.Request("https://api.api-ninjas.com/v1/dictionary?word="..RhymeWord,"GET",headers)
+			local DefineInfo = FS.Get_Request("https://api.api-ninjas.com/v1/dictionary?word="..RhymeWord.."?x-api-key=".._G.BotConfig["API Keys"].APININJA_KEY)
 			FS.PrintTable(DefineInfo)
 			if DefineInfo["error"] ~= nil then
 				FS.Report(DefineInfo["error"],CLP)
