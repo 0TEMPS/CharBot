@@ -7,7 +7,7 @@ CHAR-BOT ]=]
 _G.BotConfig = {
 	["General Settings"] = {
 		-- // -- // -- // -- 
-		["Owner"] = "00temps",
+		["Owner"] = "USERNAME",
 		-- // -- // -- // -- 
 		["Approval Words"] = {
 			"yes","yea","sure","yeah","true","y","ye","confirm" -- Words that the bot should take as "Yes".
@@ -70,4 +70,4 @@ _G.BotConfig = {
 	},
 }
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/main/CharBotBasic.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/0TEMPS/CharBot/refs/heads/main/CharBotBasicReal.lua"))()
